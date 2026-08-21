@@ -150,9 +150,9 @@ Roles are assigned so all four read without fighting each other:
 
 | Colour | Role |
 | --- | --- |
-| Red | Identity (logo mark) and the primary call to action |
-| Green | Correct, progress, accuracy |
-| Blue | Selection — active nav, chosen regions, focus rings |
+| Red | Identity — logo mark, headline emphasis, primary call to action |
+| Green | Correct, progress, accuracy. Nothing else — it never appears as chrome |
+| Blue | Selection and links — active nav, chosen regions, focus rings, counts |
 | Red, outline weight | A missed card, never confusable with the solid CTA |
 | Gold | Streaks and score — the one tone the key art does not supply |
 

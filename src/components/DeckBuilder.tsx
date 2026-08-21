@@ -57,14 +57,14 @@ export function DeckBuilder({ cards }: { cards: Card[] }) {
     <div className="flex flex-col gap-10">
       <section className="flex animate-rise items-center justify-between gap-8">
         <div>
-          <p className="mb-2 flex items-center gap-2 text-xs font-bold uppercase tracking-[0.18em] text-brand">
+          <p className="mb-2 flex items-center gap-2 text-xs font-bold uppercase tracking-[0.18em] text-muted">
             <span className="h-1.5 w-1.5 rounded-full bg-brand" />
             {cards.length} metas loaded
           </p>
           <h1 className="font-display text-4xl font-extrabold leading-[1.05] tracking-tight sm:text-5xl">
             Learn to read
             <br />
-            <span className="text-accent">the road.</span>
+            <span className="text-brand">the road.</span>
           </h1>
           <p className="mt-4 max-w-xl text-[15px] leading-relaxed text-muted">
             Pick a category, a region, or both — leave an axis untouched to include all of it. Miss a card and it comes
@@ -166,7 +166,7 @@ export function DeckBuilder({ cards }: { cards: Card[] }) {
           </div>
 
           <div className="flex flex-wrap items-center gap-1.5">
-            <Chip value={counts.due.length} label="due" tone={counts.due.length ? "accent" : "flat"} />
+            <Chip value={counts.due.length} label="due" tone={counts.due.length ? "info" : "flat"} />
             <Chip value={counts.fresh.length} label="new" tone="flat" />
             <Chip value={counts.later.length} label="scheduled" tone="flat" />
           </div>
@@ -189,11 +189,11 @@ export function DeckBuilder({ cards }: { cards: Card[] }) {
   );
 }
 
-function Chip({ value, label, tone }: { value: number; label: string; tone: "accent" | "flat" }) {
+function Chip({ value, label, tone }: { value: number; label: string; tone: "info" | "flat" }) {
   return (
     <span
       className={`inline-flex items-baseline gap-1 rounded-lg px-2 py-1 text-xs font-semibold ${
-        tone === "accent" ? "bg-accent/15 text-accent" : "bg-raised/70 text-faint"
+        tone === "info" ? "bg-info/15 text-info" : "bg-raised/70 text-faint"
       }`}
     >
       <span className="font-display text-sm font-bold tabular-nums">{value}</span>
@@ -208,7 +208,7 @@ function Heading({ label, hint, onClear }: { label: string; hint: string; onClea
       <h2 className="font-display text-xs font-bold uppercase tracking-[0.16em] text-faint">{label}</h2>
       <span className="text-xs text-faint/70">{hint}</span>
       {onClear ? (
-        <button type="button" onClick={onClear} className="ml-auto text-xs font-semibold text-accent hover:underline">
+        <button type="button" onClick={onClear} className="ml-auto text-xs font-semibold text-info hover:underline">
           Clear
         </button>
       ) : null}
