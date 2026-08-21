@@ -135,50 +135,25 @@ npm run scrape     # see above
 
 ## Deploying
 
-Every route is statically prerendered, so `npm run build` output drops onto
-Vercel with no configuration. Push the repo, import it, done. Progress is
-client-side, so there is nothing to provision.
+Every route is statically prerendered and there is nothing to provision — no
+database, no environment variables, no runtime services. Import the repo on
+Vercel and the defaults are correct: `npm run build`, output handled by the
+Next.js preset.
 
-## Design
+Two things worth knowing:
 
-The palette is taken from the GeoGuessr key art: a deep indigo-purple ground
-that lifts to a brighter violet toward the top-right, the red of the wordmark
-plate and map pin, the green of the globe's land, and white type. The globe's
-ocean blue is deliberately left out — on a purple ground it read as a third
-competing hue with nothing to say.
-
-| Colour | Role |
-| --- | --- |
-| Red | Identity and intent — logo mark, headline emphasis, primary button, every active or selected state |
-| Green | Correct, progress, accuracy. Nothing else — it never appears as chrome |
-| Gold | Work waiting and streaks |
-| Red, outline weight | A missed card, never confusable with the solid button |
-
-Category tints come from a single hue per category in `lib/taxonomy.ts`;
-saturation and lightness are theme tokens, so one number produces a tint that
-works in both modes. Those hues skip roughly 180–270: blue is out of the
-palette, and indigo is the ground colour, so a tint in that band would either
-reintroduce blue or vanish into the background.
-
-Blue does still appear inside card artwork — the EU strip on a Dutch plate, the
-Mercosur header on a Brazilian one. That is content, not palette: those plates
-are blue in the world, and recolouring them would make the cards wrong.
-
-Every colour in the app is declared in one block at the top of
-`src/app/globals.css`, so correcting a shade is a one-line edit. Light mode is a
-full peer of dark — only the token values change — and a blocking boot script
-applies the stored choice before first paint so there is no flash.
-
-Category colour comes from a single hue per category in `lib/taxonomy.ts`;
-saturation and lightness are theme tokens, so one number produces a tint that
-works in both modes. Buttons carry a solid bottom edge that collapses on press
-— that one affordance does most of the work of making the thing feel physical.
-
-Type is Outfit for display (headings, scores, buttons) and Plus Jakarta Sans
-for reading, both via `next/font`.
-
-The logo mark is a white pin on the brand red. It deliberately does not
-reproduce GeoGuessr's own lockup: the palette is shared, the mark is not.
+- **Production branch.** This repository was created empty, so GitHub set its
+  default branch to the branch the work was done on. `main` now carries the
+  same commits. Either set `main` as the default under GitHub's
+  Settings → General → Default branch, or pick it directly as the Production
+  Branch in Vercel's project settings.
+- **Scraped content is not deployed.** `public/images/plonkit/` and
+  `src/content/scraped/cards.json` are gitignored, so anything `npm run scrape`
+  produces stays on your machine and Vercel will build from the seed content
+  alone. That is deliberate — it keeps a licensing decision from being made by
+  accident. Both are ignored together, so there is no half-state where cards
+  reference images that were not deployed. Remove those two lines from
+  `.gitignore` and commit the output when you want scraped content live.
 
 ## Stack
 
