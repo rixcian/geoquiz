@@ -20,7 +20,7 @@ export function SiteNav() {
         <Link href="/" className="mr-auto flex items-center gap-2.5">
           <Mark />
           <span className="font-display text-lg font-extrabold tracking-tight">
-            Geo<span className="text-accent">Quiz</span>
+            Geo<span className="text-brand">Quiz</span>
           </span>
         </Link>
 
@@ -33,7 +33,7 @@ export function SiteNav() {
                 href={link.href}
                 aria-current={active ? "page" : undefined}
                 className={`rounded-lg px-3 py-1.5 text-sm font-semibold transition-colors ${
-                  active ? "bg-accent text-accent-ink" : "text-muted hover:bg-raised hover:text-ink"
+                  active ? "bg-info text-white" : "text-muted hover:bg-raised hover:text-ink"
                 }`}
               >
                 {link.label}
@@ -55,15 +55,15 @@ export function SiteNav() {
   );
 }
 
-/** A globe reduced to a meridian and a parallel: the smallest readable mark. */
+/**
+ * A white map pin on the brand red. Deliberately not GeoGuessr's own lockup --
+ * the palette is shared, the mark is ours.
+ */
 function Mark() {
   return (
-    <span className="grid h-9 w-9 place-items-center rounded-xl bg-accent text-accent-ink shadow-[0_3px_0_rgb(var(--accent-deep))]">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2.1} strokeLinecap="round" aria-hidden className="h-[18px] w-[18px]">
-        <circle cx="12" cy="12" r="8.5" />
-        <path d="M3.5 12h17" />
-        <path d="M12 3.5c2.6 2.5 2.6 14.5 0 17" />
-        <path d="M12 3.5c-2.6 2.5-2.6 14.5 0 17" />
+    <span className="grid h-9 w-9 place-items-center rounded-xl bg-brand text-white shadow-[0_3px_0_rgb(var(--brand-deep))]">
+      <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden className="h-[19px] w-[19px]">
+        <path d="M12 2.2a7.3 7.3 0 0 0-7.3 7.3c0 5.3 6.4 11.7 6.7 12a.9.9 0 0 0 1.2 0c.3-.3 6.7-6.7 6.7-12A7.3 7.3 0 0 0 12 2.2zm0 10.1a2.9 2.9 0 1 1 0-5.8 2.9 2.9 0 0 1 0 5.8z" />
       </svg>
     </span>
   );

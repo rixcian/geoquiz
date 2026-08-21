@@ -141,11 +141,25 @@ client-side, so there is nothing to provision.
 
 ## Design
 
-Dark-first, after GeoGuessr's own palette: deep indigo canvas, one vivid green
-that means both "go" and "correct", gold for streaks, coral for misses. Light
-mode is a full peer — only the token values in `globals.css` change, and a
-blocking boot script applies the stored choice before first paint so there is
-no flash.
+The palette is taken from the GeoGuessr key art: a deep indigo-purple ground
+that lifts to a brighter violet toward the top-right, the red of the wordmark
+plate and map pin, the green and blue of the globe's land and ocean, and white
+type.
+
+Roles are assigned so all four read without fighting each other:
+
+| Colour | Role |
+| --- | --- |
+| Red | Identity (logo mark) and the primary call to action |
+| Green | Correct, progress, accuracy |
+| Blue | Selection — active nav, chosen regions, focus rings |
+| Red, outline weight | A missed card, never confusable with the solid CTA |
+| Gold | Streaks and score — the one tone the key art does not supply |
+
+Every colour in the app is declared in one block at the top of
+`src/app/globals.css`, so correcting a shade is a one-line edit. Light mode is a
+full peer of dark — only the token values change — and a blocking boot script
+applies the stored choice before first paint so there is no flash.
 
 Category colour comes from a single hue per category in `lib/taxonomy.ts`;
 saturation and lightness are theme tokens, so one number produces a tint that
@@ -154,6 +168,9 @@ works in both modes. Buttons carry a solid bottom edge that collapses on press
 
 Type is Outfit for display (headings, scores, buttons) and Plus Jakarta Sans
 for reading, both via `next/font`.
+
+The logo mark is a white pin on the brand red. It deliberately does not
+reproduce GeoGuessr's own lockup: the palette is shared, the mark is not.
 
 ## Stack
 

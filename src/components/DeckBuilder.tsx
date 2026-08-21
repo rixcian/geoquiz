@@ -57,8 +57,8 @@ export function DeckBuilder({ cards }: { cards: Card[] }) {
     <div className="flex flex-col gap-10">
       <section className="flex animate-rise items-center justify-between gap-8">
         <div>
-          <p className="mb-2 flex items-center gap-2 text-xs font-bold uppercase tracking-[0.18em] text-accent">
-            <span className="h-1.5 w-1.5 rounded-full bg-accent" />
+          <p className="mb-2 flex items-center gap-2 text-xs font-bold uppercase tracking-[0.18em] text-brand">
+            <span className="h-1.5 w-1.5 rounded-full bg-brand" />
             {cards.length} metas loaded
           </p>
           <h1 className="font-display text-4xl font-extrabold leading-[1.05] tracking-tight sm:text-5xl">
@@ -143,7 +143,7 @@ export function DeckBuilder({ cards }: { cards: Card[] }) {
                 onClick={() => toggle(regions, setRegions, region.id)}
                 className={`rounded-xl border px-3.5 py-2 text-sm font-semibold transition-all duration-150 active:translate-y-[2px] ${
                   active
-                    ? "border-accent/60 bg-accent/12 text-accent shadow-[0_3px_0_rgb(var(--accent-deep)/0.4)]"
+                    ? "border-info/60 bg-info/15 text-info shadow-[0_3px_0_rgb(var(--info-deep))]"
                     : "border-line/80 bg-surface/70 text-muted hover:bg-raised hover:text-ink"
                 }`}
               >
@@ -175,7 +175,7 @@ export function DeckBuilder({ cards }: { cards: Card[] }) {
             href={href}
             aria-disabled={selected.length === 0}
             className={`btn ml-auto w-full px-6 py-3 text-base sm:w-auto ${
-              selected.length === 0 ? "pointer-events-none bg-raised text-faint" : "btn-accent"
+              selected.length === 0 ? "pointer-events-none bg-raised text-faint" : "btn-brand"
             }`}
           >
             Start drilling

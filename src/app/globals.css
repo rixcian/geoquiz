@@ -3,63 +3,93 @@
 @tailwind utilities;
 
 /*
- * Dark-first, the way GeoGuessr itself reads: deep indigo canvas, one vivid
- * green for "go" and "correct", gold for streaks, coral for misses. Light mode
- * is a full peer, not an afterthought -- only the token values change.
+ * Palette sampled from the GeoGuessr key art.
+ *
+ *   ground   deep indigo-purple, lifting to a brighter violet toward the
+ *            top-right, which is where the art's light comes from
+ *   red      the wordmark plate and the map pin -- the brand colour
+ *   green    the globe's land
+ *   blue     the globe's ocean
+ *   white    clouds, wordmark type, the pin's eye
+ *
+ * Roles are assigned so all four read without fighting: red carries identity
+ * and the primary call to action, green means correct, blue marks selection,
+ * and a miss is red at outline weight so it never reads as the solid CTA.
+ * Gold is the one addition -- streaks need a tone the key art does not supply.
+ *
+ * Every colour in the app is declared here and nowhere else.
  */
 
 :root,
 html.dark {
-  --canvas: 11 15 33;
-  --surface: 20 26 51;
-  --raised: 31 40 73;
-  --line: 46 58 101;
-  --ink: 240 243 255;
-  --muted: 162 172 212;
-  --faint: 111 122 166;
+  --canvas: 35 26 72;
+  --surface: 46 35 89;
+  --raised: 60 46 115;
+  --line: 80 62 147;
+  --ink: 246 243 255;
+  --muted: 194 182 230;
+  --faint: 144 127 196;
 
-  --accent: 124 222 92;
-  --accent-deep: 74 158 48;
-  --accent-ink: 8 24 6;
+  /* Globe land: correct, progress, accuracy. */
+  --accent: 95 198 74;
+  --accent-deep: 58 140 44;
+  --accent-ink: 8 26 4;
 
-  --good: 124 222 92;
-  --bad: 255 110 110;
-  --gold: 255 198 74;
-  --info: 116 146 255;
+  /* Wordmark plate and pin: identity and the primary call to action. */
+  --brand: 214 54 44;
+  --brand-deep: 160 34 26;
+
+  /* Globe ocean: selection and secondary emphasis. */
+  --info: 74 143 227;
+  --info-deep: 42 95 165;
+
+  --good: 95 198 74;
+  --bad: 232 78 68;
+  --gold: 247 190 62;
+
+  /* The violet the ground lifts to in the top-right of the key art. */
+  --lift: 122 69 181;
+  --lift-alpha: 0.5;
 
   /* Category tints resolve against these so one hue works in both themes. */
-  --tint-s: 74%;
-  --tint-l: 64%;
+  --tint-s: 72%;
+  --tint-l: 68%;
 
-  --glow: 124 222 92;
   --dot: 255 255 255;
-  --dot-alpha: 0.045;
+  --dot-alpha: 0.05;
 }
 
 html.light {
-  --canvas: 245 247 252;
+  --canvas: 245 242 253;
   --surface: 255 255 255;
-  --raised: 237 241 250;
-  --line: 214 221 238;
-  --ink: 14 19 42;
-  --muted: 82 93 130;
-  --faint: 129 140 176;
+  --raised: 237 231 250;
+  --line: 220 210 242;
+  --ink: 30 21 64;
+  --muted: 92 78 138;
+  --faint: 138 124 184;
 
-  --accent: 41 145 42;
-  --accent-deep: 26 105 28;
+  --accent: 62 143 46;
+  --accent-deep: 44 105 32;
   --accent-ink: 255 255 255;
 
-  --good: 30 138 62;
-  --bad: 208 55 55;
-  --gold: 176 122 8;
-  --info: 54 84 214;
+  --brand: 196 46 36;
+  --brand-deep: 150 30 22;
 
-  --tint-s: 66%;
-  --tint-l: 40%;
+  --info: 47 107 196;
+  --info-deep: 32 76 145;
 
-  --glow: 41 145 42;
-  --dot: 20 30 70;
-  --dot-alpha: 0.05;
+  --good: 62 143 46;
+  --bad: 214 62 62;
+  --gold: 176 122 6;
+
+  --lift: 150 110 210;
+  --lift-alpha: 0.2;
+
+  --tint-s: 64%;
+  --tint-l: 42%;
+
+  --dot: 40 20 90;
+  --dot-alpha: 0.055;
 }
 
 html {
@@ -96,11 +126,10 @@ body::before {
 body::after {
   content: "";
   position: fixed;
-  inset: -20% 0 auto 0;
-  height: 60vh;
+  inset: 0;
   z-index: 0;
   pointer-events: none;
-  background: radial-gradient(ellipse 60% 50% at 50% 0%, rgb(var(--glow) / 0.09), transparent 70%);
+  background: radial-gradient(ellipse 62% 58% at 96% -10%, rgb(var(--lift) / var(--lift-alpha)), transparent 68%);
 }
 
 body > * {
@@ -159,6 +188,20 @@ body > * {
 
   .btn-bad:active {
     box-shadow: 0 0 0 rgb(var(--bad) / 0.35);
+  }
+
+  .btn-brand {
+    background-color: rgb(var(--brand));
+    color: #ffffff;
+    box-shadow: 0 3px 0 rgb(var(--brand-deep));
+  }
+
+  .btn-brand:hover {
+    background-color: rgb(var(--brand) / 0.9);
+  }
+
+  .btn-brand:active {
+    box-shadow: 0 0 0 rgb(var(--brand-deep));
   }
 
   .btn-ghost {

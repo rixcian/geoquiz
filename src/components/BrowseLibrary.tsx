@@ -66,7 +66,7 @@ export function BrowseLibrary({ cards }: { cards: Card[] }) {
             onChange={(e) => setQuery(e.target.value)}
             placeholder="Search countries, tells, categories…"
             aria-label="Search cards"
-            className="w-full rounded-xl border border-line bg-surface py-2.5 pl-10 pr-3.5 text-sm font-medium placeholder:font-normal placeholder:text-faint focus:border-accent focus:outline-none focus:ring-2 focus:ring-accent/25"
+            className="w-full rounded-xl border border-line bg-surface py-2.5 pl-10 pr-3.5 text-sm font-medium placeholder:font-normal placeholder:text-faint focus:border-info focus:outline-none focus:ring-2 focus:ring-info/30"
           />
         </div>
         <div className="flex rounded-xl border border-line bg-surface p-1">
@@ -77,7 +77,7 @@ export function BrowseLibrary({ cards }: { cards: Card[] }) {
               onClick={() => setGroupBy(g)}
               aria-pressed={groupBy === g}
               className={`rounded-lg px-3 py-1.5 text-sm font-semibold capitalize transition-colors ${
-                groupBy === g ? "bg-accent text-accent-ink" : "text-muted hover:text-ink"
+                groupBy === g ? "bg-brand text-white" : "text-muted hover:text-ink"
               }`}
             >
               by {g}

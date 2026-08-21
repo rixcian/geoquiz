@@ -26,10 +26,13 @@ const config: Config = {
         accent: "rgb(var(--accent) / <alpha-value>)",
         "accent-deep": "rgb(var(--accent-deep) / <alpha-value>)",
         "accent-ink": "rgb(var(--accent-ink) / <alpha-value>)",
+        brand: "rgb(var(--brand) / <alpha-value>)",
+        "brand-deep": "rgb(var(--brand-deep) / <alpha-value>)",
         good: "rgb(var(--good) / <alpha-value>)",
         bad: "rgb(var(--bad) / <alpha-value>)",
         gold: "rgb(var(--gold) / <alpha-value>)",
         info: "rgb(var(--info) / <alpha-value>)",
+        "info-deep": "rgb(var(--info-deep) / <alpha-value>)",
         // Per-category tint, set by the component as an inline custom property.
         tint: "hsl(var(--tint-h) var(--tint-s) var(--tint-l) / <alpha-value>)",
       },

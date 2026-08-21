@@ -106,7 +106,7 @@ export function StudySession({ cards }: { cards: Card[] }) {
     return (
       <Empty title="Nothing in this deck">
         <p>That combination of filters has no cards yet.</p>
-        <Link href="/" className="btn btn-accent mt-1 px-5 py-2.5 text-sm">
+        <Link href="/" className="btn btn-brand mt-1 px-5 py-2.5 text-sm">
           Back to the deck builder
         </Link>
       </Empty>
@@ -118,7 +118,7 @@ export function StudySession({ cards }: { cards: Card[] }) {
       <Empty title="All caught up" glyph="✓">
         <p>Every card in this deck is scheduled for a later date. That is the system working.</p>
         <div className="flex flex-wrap gap-2.5 pt-1">
-          <button type="button" onClick={() => setStudyAhead(true)} className="btn btn-accent px-5 py-2.5 text-sm">
+          <button type="button" onClick={() => setStudyAhead(true)} className="btn btn-brand px-5 py-2.5 text-sm">
             Study ahead anyway
           </button>
           <Link href="/stats" className="btn btn-ghost px-5 py-2.5 text-sm">
@@ -257,7 +257,7 @@ export function StudySession({ cards }: { cards: Card[] }) {
           </button>
         </div>
       ) : (
-        <button type="button" onClick={() => setFlipped(true)} className="btn btn-accent px-4 py-4 text-base">
+        <button type="button" onClick={() => setFlipped(true)} className="btn btn-brand px-4 py-4 text-base">
           Reveal answer
         </button>
       )}
@@ -323,7 +323,7 @@ function SessionSummary({ correct, wrong, onAgain }: { correct: number; wrong: n
       </div>
 
       <div className="flex w-full flex-col gap-2.5 sm:flex-row">
-        <button type="button" onClick={onAgain} className="btn btn-accent flex-1 px-5 py-3 text-sm">
+        <button type="button" onClick={onAgain} className="btn btn-brand flex-1 px-5 py-3 text-sm">
           Go again
         </button>
         <Link href="/" className="btn btn-ghost flex-1 px-5 py-3 text-sm">

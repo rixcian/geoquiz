@@ -81,7 +81,7 @@ export function StatsDashboard({ cards }: { cards: Card[] }) {
         <p className="text-sm leading-relaxed text-muted">
           Stats fill in once you have graded some cards. Everything is stored in this browser only.
         </p>
-        <Link href="/" className="btn btn-accent mt-1 px-5 py-2.5 text-sm">
+        <Link href="/" className="btn btn-brand mt-1 px-5 py-2.5 text-sm">
           Start drilling
         </Link>
       </div>
