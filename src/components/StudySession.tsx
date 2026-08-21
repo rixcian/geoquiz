@@ -4,19 +4,19 @@ import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { CATEGORY_IDS, REGION_IDS, type Card, type CategoryId, type RegionId } from "@/lib/types";
-import { categoryName, regionName } from "@/lib/taxonomy";
+import { categoryName, regionName, tintStyle } from "@/lib/taxonomy";
 import { buildQueue, describeInterval, gradeCard, type CardProgress } from "@/lib/srs";
 import { useProgress } from "@/lib/storage";
 import { useNow } from "@/lib/useNow";
 import { CardFace } from "./CardFace";
+import { CategoryIcon } from "./CategoryIcon";
 import { Flag } from "./Flag";
-import { Pill } from "./Pill";
 
 /**
  * A session freezes the inputs the queue is built from -- the filtered cards,
- * the progress snapshot and the clock -- at the moment it starts. Grading a
- * card must not reorder the deck underneath the user, so nothing downstream of
- * a review feeds back into queue construction.
+ * the progress snapshot and the clock -- at the moment it starts. Grading must
+ * not reorder the deck underneath the user, so nothing downstream of a review
+ * feeds back into queue construction.
  */
 interface Session {
   key: string;
@@ -34,6 +34,9 @@ export function StudySession({ cards }: { cards: Card[] }) {
   const [index, setIndex] = useState(0);
   const [flipped, setFlipped] = useState(false);
   const [tally, setTally] = useState({ correct: 0, wrong: 0 });
+  const [streak, setStreak] = useState(0);
+  /** Bumped on every grade so the score chips can replay their pop animation. */
+  const [pulse, setPulse] = useState(0);
 
   const filterKey = `${params.get("c") ?? ""}|${params.get("r") ?? ""}`;
 
@@ -47,15 +50,16 @@ export function StudySession({ cards }: { cards: Card[] }) {
 
   const sessionKey = `${filterKey}|${studyAhead}|${restarts}`;
 
-  // Adjusting state during render when the identity of the session changes.
-  // This is React's documented pattern for deriving state from changing props,
-  // and it keeps the frozen snapshot in sync without an effect round-trip.
+  // Adjusting state during render when the session identity changes. React's
+  // documented pattern for deriving state from changing props, and it keeps
+  // the frozen snapshot in sync without an effect round-trip.
   const [session, setSession] = useState<Session | null>(null);
   if (session === null || session.key !== sessionKey) {
     setSession({ key: sessionKey, progress: state.cards, startedAt: now });
     setIndex(0);
     setFlipped(false);
     setTally({ correct: 0, wrong: 0 });
+    setStreak(0);
   }
 
   const queue = useMemo(() => {
@@ -73,6 +77,8 @@ export function StudySession({ cards }: { cards: Card[] }) {
       if (!current) return;
       record(current.id, correct, Date.now());
       setTally((t) => ({ correct: t.correct + (correct ? 1 : 0), wrong: t.wrong + (correct ? 0 : 1) }));
+      setStreak((s) => (correct ? s + 1 : 0));
+      setPulse((p) => p + 1);
       setFlipped(false);
       setIndex((i) => i + 1);
     },
@@ -100,7 +106,7 @@ export function StudySession({ cards }: { cards: Card[] }) {
     return (
       <Empty title="Nothing in this deck">
         <p>That combination of filters has no cards yet.</p>
-        <Link href="/" className="text-accent hover:underline">
+        <Link href="/" className="btn btn-accent mt-1 px-5 py-2.5 text-sm">
           Back to the deck builder
         </Link>
       </Empty>
@@ -109,17 +115,13 @@ export function StudySession({ cards }: { cards: Card[] }) {
 
   if (queue.length === 0) {
     return (
-      <Empty title="Nothing due right now">
+      <Empty title="All caught up" glyph="✓">
         <p>Every card in this deck is scheduled for a later date. That is the system working.</p>
-        <div className="flex flex-wrap gap-3 pt-1">
-          <button
-            type="button"
-            onClick={() => setStudyAhead(true)}
-            className="rounded-lg bg-accent px-4 py-2 text-sm font-medium text-accent-ink hover:opacity-90"
-          >
+        <div className="flex flex-wrap gap-2.5 pt-1">
+          <button type="button" onClick={() => setStudyAhead(true)} className="btn btn-accent px-5 py-2.5 text-sm">
             Study ahead anyway
           </button>
-          <Link href="/stats" className="rounded-lg border border-line px-4 py-2 text-sm hover:bg-raised">
+          <Link href="/stats" className="btn btn-ghost px-5 py-2.5 text-sm">
             See stats
           </Link>
         </div>
@@ -128,137 +130,240 @@ export function StudySession({ cards }: { cards: Card[] }) {
   }
 
   if (!current) {
-    const total = tally.correct + tally.wrong;
-    const pct = total ? Math.round((tally.correct / total) * 100) : 0;
     return (
-      <Empty title="Session complete">
-        <p className="text-base text-ink">
-          <span className="font-semibold tabular-nums">{tally.correct}</span> of{" "}
-          <span className="font-semibold tabular-nums">{total}</span> ({pct}%)
-        </p>
-        <p>Missed cards dropped back to box 1 and will resurface tomorrow.</p>
-        <div className="flex flex-wrap gap-3 pt-1">
-          <button
-            type="button"
-            onClick={() => setRestarts((n) => n + 1)}
-            className="rounded-lg bg-accent px-4 py-2 text-sm font-medium text-accent-ink hover:opacity-90"
-          >
-            Go again
-          </button>
-          <Link href="/" className="rounded-lg border border-line px-4 py-2 text-sm hover:bg-raised">
-            Build another deck
-          </Link>
-          <Link href="/stats" className="rounded-lg border border-line px-4 py-2 text-sm hover:bg-raised">
-            See stats
-          </Link>
-        </div>
-      </Empty>
+      <SessionSummary
+        correct={tally.correct}
+        wrong={tally.wrong}
+        onAgain={() => setRestarts((n) => n + 1)}
+      />
     );
   }
 
   const progressPct = Math.round((index / queue.length) * 100);
   const currentProgress = state.cards[current.id];
+  const box = currentProgress?.box ?? 1;
   const nextBox = gradeCard(currentProgress, true, session?.startedAt ?? now).box;
 
   return (
-    <div className="flex flex-col gap-4">
-      <div className="flex items-center gap-3 text-xs text-faint">
-        <span className="tabular-nums">
-          {index + 1} / {queue.length}
+    <div className="flex flex-col gap-4" style={tintStyle(current.category)}>
+      {/* Round bar: where you are, how you are doing, current streak. */}
+      <div className="flex items-center gap-3">
+        <span className="font-display text-xs font-bold uppercase tracking-[0.14em] text-faint">
+          Round <span className="text-ink tabular-nums">{index + 1}</span>
+          <span className="text-faint/60"> / {queue.length}</span>
         </span>
-        <div className="h-1 flex-1 overflow-hidden rounded-full bg-raised">
-          <div className="h-full rounded-full bg-accent transition-all duration-300" style={{ width: `${progressPct}%` }} />
+
+        <div className="relative h-2 flex-1 overflow-hidden rounded-full bg-raised">
+          <div
+            className="h-full rounded-full bg-accent transition-[width] duration-500 ease-out"
+            style={{ width: `${progressPct}%` }}
+          />
         </div>
-        <span className="tabular-nums text-good">{tally.correct}</span>
-        <span className="tabular-nums text-bad">{tally.wrong}</span>
+
+        {streak >= 2 ? (
+          <span
+            key={`streak-${pulse}`}
+            className="inline-flex animate-score-pop items-center gap-1 rounded-lg bg-gold/15 px-2 py-1 font-display text-xs font-bold text-gold"
+          >
+            <FlameIcon />
+            {streak}
+          </span>
+        ) : null}
+
+        <span key={`good-${pulse}`} className="inline-block animate-score-pop font-display text-sm font-bold tabular-nums text-good">
+          {tally.correct}
+        </span>
+        <span key={`bad-${pulse}`} className="inline-block animate-score-pop font-display text-sm font-bold tabular-nums text-bad">
+          {tally.wrong}
+        </span>
       </div>
 
-      <article className="overflow-hidden rounded-xl border border-line bg-surface">
-        <div className="flex items-center gap-2 border-b border-line px-4 py-2.5">
-          <Pill tone="accent">{categoryName(current.category)}</Pill>
+      <article className="overflow-hidden rounded-2xl border border-line bg-surface shadow-xl shadow-black/20">
+        <div className="flex items-center gap-2 border-b border-line/70 px-4 py-3">
+          <span className="grid h-7 w-7 shrink-0 place-items-center rounded-lg bg-tint/15 text-tint">
+            <CategoryIcon id={current.category} className="h-[17px] w-[17px]" />
+          </span>
+          <span className="truncate font-display text-sm font-bold tracking-tight">
+            {categoryName(current.category)}
+          </span>
+
           {/* Region is withheld until the reveal: naming it up front would
               narrow the answer to a handful of countries. */}
-          {flipped ? <Pill>{regionName(current.region)}</Pill> : null}
-          {flipped && current.provenance === "seed" ? <Pill tone="warn">seed</Pill> : null}
-          <span className="ml-auto shrink-0 text-xs text-faint">box {currentProgress?.box ?? 1}/5</span>
+          {flipped ? (
+            <span className="animate-rise shrink-0 whitespace-nowrap rounded-full border border-line bg-raised/70 px-2.5 py-0.5 text-[11px] font-semibold text-muted">
+              {regionName(current.region)}
+            </span>
+          ) : null}
+          {flipped && current.provenance === "seed" ? (
+            <span className="animate-rise hidden shrink-0 rounded-full border border-gold/40 bg-gold/12 px-2.5 py-0.5 text-[11px] font-semibold text-gold sm:inline">
+              seed
+            </span>
+          ) : null}
+
+          <BoxMeter box={box} />
         </div>
 
-        <div className="flex min-h-[320px] items-center justify-center bg-raised/40 sm:min-h-[380px]">
+        <div className="art-stage flex min-h-[300px] items-center justify-center sm:min-h-[380px]">
           <CardFace card={current} priority={index === 0} />
         </div>
 
         {flipped ? (
-          <div className="animate-fade-up border-t border-line px-4 py-4 sm:px-5">
-            <h2 className="flex items-center gap-2 text-xl font-semibold tracking-tight">
+          <div key={current.id} className="animate-pop-in border-t border-line/70 px-4 py-4 sm:px-5 sm:py-5">
+            <h2 className="flex items-center gap-2.5 font-display text-2xl font-extrabold tracking-tight">
               <Flag code={current.countryCode} className="text-2xl" />
               {current.country}
             </h2>
-            <p className="mt-2 text-sm font-medium leading-relaxed text-ink">{current.tell}</p>
+            <p className="mt-2.5 text-[15px] font-semibold leading-relaxed text-ink">{current.tell}</p>
             <p className="mt-2 text-sm leading-relaxed text-muted">{current.detail}</p>
             {current.lookalikes?.length ? (
-              <p className="mt-3 text-xs text-faint">
-                <span className="font-medium uppercase tracking-wider">Confusable with</span>{" "}
-                {current.lookalikes.join(" · ")}
-              </p>
+              <div className="mt-3.5 flex flex-wrap items-center gap-1.5">
+                <span className="font-display text-[10px] font-bold uppercase tracking-[0.14em] text-faint">
+                  Watch for
+                </span>
+                {current.lookalikes.map((name) => (
+                  <span key={name} className="rounded-md bg-raised/80 px-2 py-0.5 text-[11px] font-medium text-muted">
+                    {name}
+                  </span>
+                ))}
+              </div>
             ) : null}
             {current.source ? (
               <a
                 href={current.source.url}
                 target="_blank"
                 rel="noreferrer noopener"
-                className="mt-3 inline-block text-xs text-accent hover:underline"
+                className="mt-3 inline-block text-xs font-semibold text-accent hover:underline"
               >
                 {current.source.label} ↗
               </a>
             ) : null}
           </div>
         ) : (
-          <div className="border-t border-line px-4 py-4 text-sm text-faint sm:px-5">
-            Which country, and what gave it away?
+          <div className="border-t border-line/70 px-4 py-4 text-sm font-medium text-faint sm:px-5">
+            Which country — and what gave it away?
           </div>
         )}
       </article>
 
       {flipped ? (
         <div className="grid grid-cols-2 gap-3">
-          <button
-            type="button"
-            onClick={() => grade(false)}
-            className="rounded-lg border border-bad/50 bg-bad/10 px-4 py-3 text-sm font-medium text-bad transition-colors hover:bg-bad/20"
-          >
-            Missed it
-            <span className="ml-1.5 hidden text-xs opacity-70 sm:inline">— back to box 1</span>
+          <button type="button" onClick={() => grade(false)} className="btn btn-bad flex-col gap-0.5 px-4 py-3.5">
+            <span className="text-[15px]">Missed it</span>
+            <span className="text-[11px] font-medium opacity-70">back to box 1</span>
           </button>
-          <button
-            type="button"
-            onClick={() => grade(true)}
-            className="rounded-lg border border-good/50 bg-good/10 px-4 py-3 text-sm font-medium text-good transition-colors hover:bg-good/20"
-          >
-            Got it
-            <span className="ml-1.5 hidden text-xs opacity-70 sm:inline">— {describeInterval(nextBox)}</span>
+          <button type="button" onClick={() => grade(true)} className="btn btn-good flex-col gap-0.5 px-4 py-3.5">
+            <span className="text-[15px]">Got it</span>
+            <span className="text-[11px] font-medium opacity-70">{describeInterval(nextBox)}</span>
           </button>
         </div>
       ) : (
-        <button
-          type="button"
-          onClick={() => setFlipped(true)}
-          className="rounded-lg bg-accent px-4 py-3 text-sm font-medium text-accent-ink transition-opacity hover:opacity-90"
-        >
+        <button type="button" onClick={() => setFlipped(true)} className="btn btn-accent px-4 py-4 text-base">
           Reveal answer
         </button>
       )}
 
-      <p className="text-center text-xs text-faint">Space to reveal · 1 missed · 2 got it</p>
+      <p className="text-center text-xs text-faint">
+        <Key>Space</Key> reveal <span className="mx-1 opacity-40">·</span> <Key>1</Key> missed{" "}
+        <span className="mx-1 opacity-40">·</span> <Key>2</Key> got it
+      </p>
     </div>
   );
 }
 
-function Empty({ title, children }: { title: string; children: React.ReactNode }) {
+/** Five pips showing how far up the Leitner ladder this card has climbed. */
+function BoxMeter({ box }: { box: number }) {
   return (
-    <div className="mx-auto flex max-w-md flex-col items-start gap-3 rounded-xl border border-line bg-surface p-6">
-      <h1 className="text-lg font-semibold tracking-tight">{title}</h1>
-      <div className="flex flex-col gap-2 text-sm text-muted">{children}</div>
+    <span className="ml-auto hidden shrink-0 items-center gap-2 xs:flex" title={`Leitner box ${box} of 5`}>
+      <span className="hidden font-display text-[10px] font-bold uppercase tracking-[0.14em] text-faint sm:inline">
+        box
+      </span>
+      <span className="flex gap-1">
+        {[1, 2, 3, 4, 5].map((i) => (
+          <span
+            key={i}
+            className={`h-1.5 w-3 rounded-full transition-colors ${i <= box ? "bg-accent" : "bg-raised"}`}
+          />
+        ))}
+      </span>
+    </span>
+  );
+}
+
+function SessionSummary({ correct, wrong, onAgain }: { correct: number; wrong: number; onAgain: () => void }) {
+  const total = correct + wrong;
+  const pct = total ? Math.round((correct / total) * 100) : 0;
+  const verdict = pct >= 90 ? "Sharp." : pct >= 70 ? "Solid round." : pct >= 40 ? "Getting there." : "Plenty to learn.";
+
+  return (
+    <div className="mx-auto flex max-w-md animate-pop-in flex-col items-center gap-5 rounded-2xl border border-line bg-surface p-7 text-center shadow-2xl shadow-black/25">
+      <div className="relative grid h-32 w-32 place-items-center">
+        <svg viewBox="0 0 120 120" className="absolute inset-0 -rotate-90" aria-hidden>
+          <circle cx="60" cy="60" r="52" fill="none" stroke="rgb(var(--raised))" strokeWidth="12" />
+          <circle
+            cx="60"
+            cy="60"
+            r="52"
+            fill="none"
+            stroke="rgb(var(--accent))"
+            strokeWidth="12"
+            strokeLinecap="round"
+            strokeDasharray={`${(pct / 100) * 2 * Math.PI * 52} ${2 * Math.PI * 52}`}
+          />
+        </svg>
+        <span className="font-display text-4xl font-extrabold tabular-nums">{pct}%</span>
+      </div>
+
+      <div>
+        <h1 className="font-display text-2xl font-extrabold tracking-tight">{verdict}</h1>
+        <p className="mt-1.5 text-sm text-muted">
+          <span className="font-display font-bold text-good tabular-nums">{correct}</span> right,{" "}
+          <span className="font-display font-bold text-bad tabular-nums">{wrong}</span> missed. Misses drop to box 1 and
+          resurface tomorrow.
+        </p>
+      </div>
+
+      <div className="flex w-full flex-col gap-2.5 sm:flex-row">
+        <button type="button" onClick={onAgain} className="btn btn-accent flex-1 px-5 py-3 text-sm">
+          Go again
+        </button>
+        <Link href="/" className="btn btn-ghost flex-1 px-5 py-3 text-sm">
+          New deck
+        </Link>
+        <Link href="/stats" className="btn btn-ghost flex-1 px-5 py-3 text-sm">
+          Stats
+        </Link>
+      </div>
     </div>
+  );
+}
+
+function Empty({ title, glyph, children }: { title: string; glyph?: string; children: React.ReactNode }) {
+  return (
+    <div className="mx-auto flex max-w-md animate-pop-in flex-col items-start gap-3 rounded-2xl border border-line bg-surface p-6 shadow-xl shadow-black/20">
+      {glyph ? (
+        <span className="grid h-11 w-11 place-items-center rounded-xl bg-accent/15 font-display text-xl font-bold text-accent">
+          {glyph}
+        </span>
+      ) : null}
+      <h1 className="font-display text-xl font-extrabold tracking-tight">{title}</h1>
+      <div className="flex flex-col gap-2 text-sm leading-relaxed text-muted">{children}</div>
+    </div>
+  );
+}
+
+function Key({ children }: { children: React.ReactNode }) {
+  return (
+    <kbd className="rounded-md border border-line bg-raised/70 px-1.5 py-0.5 font-display text-[10px] font-bold text-muted">
+      {children}
+    </kbd>
+  );
+}
+
+function FlameIcon() {
+  return (
+    <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden className="h-3.5 w-3.5">
+      <path d="M12 2c.6 3.2-1.3 4.6-2.7 6C7.6 9.6 6 11.2 6 14a6 6 0 0 0 12 0c0-2.4-1-4-2.2-5.6-.5 1-1.2 1.7-2 2 .5-3.4-1-6.2-1.8-8.4z" />
+    </svg>
   );
 }
 

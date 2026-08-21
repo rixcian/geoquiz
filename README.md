@@ -139,6 +139,22 @@ Every route is statically prerendered, so `npm run build` output drops onto
 Vercel with no configuration. Push the repo, import it, done. Progress is
 client-side, so there is nothing to provision.
 
+## Design
+
+Dark-first, after GeoGuessr's own palette: deep indigo canvas, one vivid green
+that means both "go" and "correct", gold for streaks, coral for misses. Light
+mode is a full peer — only the token values in `globals.css` change, and a
+blocking boot script applies the stored choice before first paint so there is
+no flash.
+
+Category colour comes from a single hue per category in `lib/taxonomy.ts`;
+saturation and lightness are theme tokens, so one number produces a tint that
+works in both modes. Buttons carry a solid bottom edge that collapses on press
+— that one affordance does most of the work of making the thing feel physical.
+
+Type is Outfit for display (headings, scores, buttons) and Plus Jakarta Sans
+for reading, both via `next/font`.
+
 ## Stack
 
 Next.js 16 (App Router) · React 19 · TypeScript · Tailwind CSS 3. No database,

@@ -2,54 +2,239 @@
 @tailwind components;
 @tailwind utilities;
 
-:root {
-  --canvas: 250 250 249;
-  --surface: 255 255 255;
-  --raised: 244 244 242;
-  --line: 226 226 222;
-  --ink: 24 24 27;
-  --muted: 92 92 99;
-  --faint: 140 140 148;
-  --accent: 32 92 168;
-  --accent-ink: 255 255 255;
-  --good: 26 133 84;
-  --bad: 190 46 46;
+/*
+ * Dark-first, the way GeoGuessr itself reads: deep indigo canvas, one vivid
+ * green for "go" and "correct", gold for streaks, coral for misses. Light mode
+ * is a full peer, not an afterthought -- only the token values change.
+ */
+
+:root,
+html.dark {
+  --canvas: 11 15 33;
+  --surface: 20 26 51;
+  --raised: 31 40 73;
+  --line: 46 58 101;
+  --ink: 240 243 255;
+  --muted: 162 172 212;
+  --faint: 111 122 166;
+
+  --accent: 124 222 92;
+  --accent-deep: 74 158 48;
+  --accent-ink: 8 24 6;
+
+  --good: 124 222 92;
+  --bad: 255 110 110;
+  --gold: 255 198 74;
+  --info: 116 146 255;
+
+  /* Category tints resolve against these so one hue works in both themes. */
+  --tint-s: 74%;
+  --tint-l: 64%;
+
+  --glow: 124 222 92;
+  --dot: 255 255 255;
+  --dot-alpha: 0.045;
 }
 
-.dark {
-  --canvas: 16 17 19;
-  --surface: 24 25 28;
-  --raised: 33 35 39;
-  --line: 51 54 59;
-  --ink: 240 240 238;
-  --muted: 165 167 172;
-  --faint: 120 123 130;
-  --accent: 96 158 240;
-  --accent-ink: 12 20 32;
-  --good: 74 190 130;
-  --bad: 240 116 108;
+html.light {
+  --canvas: 245 247 252;
+  --surface: 255 255 255;
+  --raised: 237 241 250;
+  --line: 214 221 238;
+  --ink: 14 19 42;
+  --muted: 82 93 130;
+  --faint: 129 140 176;
+
+  --accent: 41 145 42;
+  --accent-deep: 26 105 28;
+  --accent-ink: 255 255 255;
+
+  --good: 30 138 62;
+  --bad: 208 55 55;
+  --gold: 176 122 8;
+  --info: 54 84 214;
+
+  --tint-s: 66%;
+  --tint-l: 40%;
+
+  --glow: 41 145 42;
+  --dot: 20 30 70;
+  --dot-alpha: 0.05;
 }
 
 html {
-  color-scheme: light;
+  color-scheme: dark;
 }
 
-html.dark {
-  color-scheme: dark;
+html.light {
+  color-scheme: light;
 }
 
 body {
   background-color: rgb(var(--canvas));
   color: rgb(var(--ink));
   -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
 }
 
-/* Keep long option lists from bouncing the page on mobile. */
+/* A faint survey grid behind everything, plus one soft glow near the top.
+   Fixed and non-interactive so it never affects layout or hit testing. */
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  background-image: radial-gradient(
+    circle at 1px 1px,
+    rgb(var(--dot) / var(--dot-alpha)) 1px,
+    transparent 0
+  );
+  background-size: 26px 26px;
+}
+
+body::after {
+  content: "";
+  position: fixed;
+  inset: -20% 0 auto 0;
+  height: 60vh;
+  z-index: 0;
+  pointer-events: none;
+  background: radial-gradient(ellipse 60% 50% at 50% 0%, rgb(var(--glow) / 0.09), transparent 70%);
+}
+
+body > * {
+  position: relative;
+  z-index: 1;
+}
+
+@layer components {
+  /* Chunky pressable button: a solid bottom edge that collapses on press.
+     The whole design leans on this one affordance. */
+  .btn {
+    @apply relative inline-flex select-none items-center justify-center gap-2 rounded-xl
+           font-semibold tracking-tight transition-[transform,box-shadow,background-color] duration-100
+           active:translate-y-[3px];
+  }
+
+  .btn-accent {
+    background-color: rgb(var(--accent));
+    color: rgb(var(--accent-ink));
+    box-shadow: 0 3px 0 rgb(var(--accent-deep));
+  }
+
+  .btn-accent:hover {
+    background-color: rgb(var(--accent) / 0.9);
+  }
+
+  .btn-accent:active {
+    box-shadow: 0 0 0 rgb(var(--accent-deep));
+  }
+
+  .btn-good {
+    background-color: rgb(var(--good) / 0.16);
+    color: rgb(var(--good));
+    box-shadow: 0 3px 0 rgb(var(--good) / 0.35);
+    border: 1px solid rgb(var(--good) / 0.45);
+  }
+
+  .btn-good:hover {
+    background-color: rgb(var(--good) / 0.26);
+  }
+
+  .btn-good:active {
+    box-shadow: 0 0 0 rgb(var(--good) / 0.35);
+  }
+
+  .btn-bad {
+    background-color: rgb(var(--bad) / 0.16);
+    color: rgb(var(--bad));
+    box-shadow: 0 3px 0 rgb(var(--bad) / 0.35);
+    border: 1px solid rgb(var(--bad) / 0.45);
+  }
+
+  .btn-bad:hover {
+    background-color: rgb(var(--bad) / 0.26);
+  }
+
+  .btn-bad:active {
+    box-shadow: 0 0 0 rgb(var(--bad) / 0.35);
+  }
+
+  .btn-ghost {
+    @apply border border-line bg-surface text-muted;
+    box-shadow: 0 3px 0 rgb(var(--line) / 0.7);
+  }
+
+  .btn-ghost:hover {
+    @apply bg-raised text-ink;
+  }
+
+  .btn-ghost:active {
+    box-shadow: 0 0 0 rgb(var(--line));
+  }
+
+  /* Backdrop for schematic art: a specimen plate rather than a void. */
+  .art-stage {
+    background:
+      radial-gradient(ellipse 70% 60% at 50% 45%, rgb(var(--dot) / 0.06), transparent 70%),
+      linear-gradient(180deg, rgb(var(--raised) / 0.55), rgb(var(--canvas) / 0.35));
+  }
+}
+
+@keyframes rise {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes pop-in {
+  0% {
+    opacity: 0;
+    transform: scale(0.94) translateY(14px);
+  }
+  60% {
+    opacity: 1;
+    transform: scale(1.012) translateY(-2px);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+}
+
+@keyframes score-pop {
+  0% {
+    transform: scale(1);
+  }
+  40% {
+    transform: scale(1.42);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+@keyframes sweep {
+  from {
+    transform: translateX(-100%);
+  }
+  to {
+    transform: translateX(100%);
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
   *,
   *::before,
   *::after {
     animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
     transition-duration: 0.01ms !important;
   }
 }

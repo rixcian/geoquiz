@@ -8,14 +8,16 @@ export const THEME_KEY = "geoquiz.theme";
 
 /**
  * Runs before first paint (injected in <head>) so the page never flashes the
- * wrong theme. Kept as a string constant so the inline script and the store
- * below cannot drift apart on the storage key.
+ * wrong theme. Dark is the default when nothing is stored and the OS has no
+ * preference -- the palette is designed dark-first.
+ *
+ * Both classes are written explicitly rather than toggling only `dark`,
+ * because the light tokens live under `html.light`.
  */
-export const THEME_BOOT_SCRIPT = `(function(){try{var t=localStorage.getItem(${JSON.stringify(THEME_KEY)});if(t!=="light"&&t!=="dark"){t=window.matchMedia("(prefers-color-scheme: dark)").matches?"dark":"light"}document.documentElement.classList.toggle("dark",t==="dark")}catch(e){}})()`;
+export const THEME_BOOT_SCRIPT = `(function(){try{var k=${JSON.stringify(THEME_KEY)};var t=localStorage.getItem(k);if(t!=="light"&&t!=="dark"){t=window.matchMedia("(prefers-color-scheme: light)").matches?"light":"dark"}var c=document.documentElement.classList;c.add(t);c.remove(t==="dark"?"light":"dark")}catch(e){document.documentElement.classList.add("dark")}})()`;
 
 /* The DOM is the source of truth: the boot script has already applied the
- * class, so the store just reads it back. That keeps the toggle in sync with
- * whatever the script decided without a second resolution pass. */
+ * class, so the store reads it back rather than resolving a second time. */
 
 const listeners = new Set<() => void>();
 
@@ -27,15 +29,17 @@ function subscribe(onChange: () => void): () => void {
 }
 
 function getSnapshot(): Theme {
-  return document.documentElement.classList.contains("dark") ? "dark" : "light";
+  return document.documentElement.classList.contains("light") ? "light" : "dark";
 }
 
 function getServerSnapshot(): Theme {
-  return "light";
+  return "dark";
 }
 
 function apply(theme: Theme): void {
-  document.documentElement.classList.toggle("dark", theme === "dark");
+  const classes = document.documentElement.classList;
+  classes.add(theme);
+  classes.remove(theme === "dark" ? "light" : "dark");
   try {
     window.localStorage.setItem(THEME_KEY, theme);
   } catch {

@@ -38,7 +38,8 @@ export interface Category {
   id: CategoryId;
   name: string;
   blurb: string;
-  glyph: string;
+  /** Raw HSL hue for this category's tint. See lib/taxonomy. */
+  hue: number;
 }
 
 export interface Region {
