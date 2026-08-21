@@ -1,0 +1,169 @@
+[
+  {
+    "id": "road-lines-us",
+    "category": "road-lines",
+    "region": "north-america",
+    "country": "United States / Canada / Mexico",
+    "tell": "Yellow centre line separating opposing traffic, white edge and lane lines.",
+    "detail": "North America is the largest yellow-centre-line bloc. Yellow always means opposing directions, white always means same direction, which is a rule you can apply on any road in the region.",
+    "lookalikes": ["Brazil", "Japan", "Norway"],
+    "art": {
+      "kind": "roadline",
+      "surface": "#3a3a3c",
+      "edge": { "color": "#f2f2f2", "style": "solid" },
+      "center": { "color": "#f0c419", "style": "double" }
+    },
+    "provenance": "seed"
+  },
+  {
+    "id": "road-lines-br",
+    "category": "road-lines",
+    "region": "latin-america",
+    "country": "Brazil",
+    "countryCode": "br",
+    "tell": "Yellow centre line with white edge lines, Portuguese signage.",
+    "detail": "Brazil uses yellow centre lines like North America, which is exactly why it is the standard trap when you land in South America. Portuguese wording and the Mercosur plate resolve it.",
+    "lookalikes": ["Argentina", "United States", "Paraguay"],
+    "art": {
+      "kind": "roadline",
+      "surface": "#3d3d3f",
+      "edge": { "color": "#f2f2f2", "style": "solid" },
+      "center": { "color": "#f0c419", "style": "solid" }
+    },
+    "provenance": "seed"
+  },
+  {
+    "id": "road-lines-ar",
+    "category": "road-lines",
+    "region": "latin-america",
+    "country": "Argentina",
+    "countryCode": "ar",
+    "tell": "White centre lines, not yellow. The cleanest split from Brazil.",
+    "detail": "Argentina keeps white for centre lines where Brazil goes yellow. If you are unsure which side of that border you are on, the paint answers it before the language does.",
+    "lookalikes": ["Brazil", "Uruguay", "Chile"],
+    "art": {
+      "kind": "roadline",
+      "surface": "#3d3d3f",
+      "edge": { "color": "#f2f2f2", "style": "solid" },
+      "center": { "color": "#f2f2f2", "style": "dashed" }
+    },
+    "provenance": "seed"
+  },
+  {
+    "id": "road-lines-jp",
+    "category": "road-lines",
+    "region": "east-asia",
+    "country": "Japan",
+    "countryCode": "jp",
+    "tell": "White centre lines with orange lines where overtaking is banned; left-hand traffic.",
+    "detail": "Japan's default centre line is white, switching to a solid orange line to prohibit overtaking. That orange, plus left-hand traffic and immaculate road surfaces, is a strong Japan signature.",
+    "lookalikes": ["South Korea", "Taiwan"],
+    "art": {
+      "kind": "roadline",
+      "surface": "#414143",
+      "edge": { "color": "#f2f2f2", "style": "solid" },
+      "center": { "color": "#e8891c", "style": "solid" }
+    },
+    "provenance": "seed"
+  },
+  {
+    "id": "road-lines-no",
+    "category": "road-lines",
+    "region": "europe",
+    "country": "Norway",
+    "countryCode": "no",
+    "tell": "Yellow centre lines in Europe. Almost always Norway.",
+    "detail": "Europe is overwhelmingly a white-lines continent, so a yellow centre line on a European-looking road is a very loud signal. Norway is the main user; Sweden and Finland stay white.",
+    "lookalikes": ["Sweden", "Iceland", "United States"],
+    "art": {
+      "kind": "roadline",
+      "surface": "#3a3a3c",
+      "edge": { "color": "#f2f2f2", "style": "solid" },
+      "center": { "color": "#f0c419", "style": "dashed" }
+    },
+    "provenance": "seed"
+  },
+  {
+    "id": "road-lines-se",
+    "category": "road-lines",
+    "region": "europe",
+    "country": "Sweden",
+    "countryCode": "se",
+    "tell": "White centre lines with long dashes, in otherwise Norway-like scenery.",
+    "detail": "The Sweden/Norway pair is settled by paint colour: Sweden white, Norway yellow. Sweden also has flatter, more agricultural terrain in the south and red-painted timber houses.",
+    "lookalikes": ["Norway", "Finland"],
+    "art": {
+      "kind": "roadline",
+      "surface": "#3a3a3c",
+      "edge": { "color": "#f2f2f2", "style": "solid" },
+      "center": { "color": "#f2f2f2", "style": "dashed" }
+    },
+    "provenance": "seed"
+  },
+  {
+    "id": "road-lines-gb",
+    "category": "road-lines",
+    "region": "europe",
+    "country": "United Kingdom / Ireland",
+    "tell": "Double yellow lines along the kerb edge meaning no parking; white centre lines.",
+    "detail": "Yellow here is an edge-of-road parking restriction, not a centre line. Two yellow lines hugging the kerb through a town is a British Isles staple. Ireland adds yellow warning signs and Irish-language place names.",
+    "lookalikes": ["Malta", "Cyprus"],
+    "art": {
+      "kind": "roadline",
+      "surface": "#3d3d3f",
+      "edge": { "color": "#f0c419", "style": "double" },
+      "center": { "color": "#f2f2f2", "style": "dashed" }
+    },
+    "provenance": "seed"
+  },
+  {
+    "id": "road-lines-th",
+    "category": "road-lines",
+    "region": "southeast-asia",
+    "country": "Thailand",
+    "countryCode": "th",
+    "tell": "Yellow centre lines on rural roads, left-hand traffic, Thai script.",
+    "detail": "Thailand is one of the Southeast Asian countries using yellow centre lines. Combined with left-hand traffic and Thai script it separates cleanly from Vietnam and Cambodia, which drive on the right.",
+    "lookalikes": ["Malaysia", "Laos", "Cambodia"],
+    "art": {
+      "kind": "roadline",
+      "surface": "#404042",
+      "edge": { "color": "#f2f2f2", "style": "solid" },
+      "center": { "color": "#f0c419", "style": "dashed" }
+    },
+    "provenance": "seed"
+  },
+  {
+    "id": "road-lines-au",
+    "category": "road-lines",
+    "region": "oceania",
+    "country": "Australia",
+    "countryCode": "au",
+    "tell": "White centre lines, left-hand traffic, and very wide red-dirt shoulders.",
+    "detail": "Australian rural roads run white lines with generous unsealed shoulders that are frequently red or ochre. The soil colour plus left-hand traffic plus eucalyptus is the fastest Australia read.",
+    "lookalikes": ["New Zealand", "South Africa"],
+    "art": {
+      "kind": "roadline",
+      "surface": "#454042",
+      "edge": { "color": "#f2f2f2", "style": "solid" },
+      "center": { "color": "#f2f2f2", "style": "dashed" }
+    },
+    "provenance": "seed"
+  },
+  {
+    "id": "road-lines-eu",
+    "category": "road-lines",
+    "region": "europe",
+    "country": "Continental Europe (default)",
+    "tell": "White centre and edge lines with no yellow anywhere.",
+    "detail": "The European baseline. When lines are all white, the paint has told you it is not North America, not Brazil and not Norway, and you move on to bollards, plates and language.",
+    "lookalikes": ["Russia", "Argentina"],
+    "art": {
+      "kind": "roadline",
+      "surface": "#3b3b3d",
+      "edge": { "color": "#f2f2f2", "style": "solid" },
+      "center": { "color": "#f2f2f2", "style": "dashed" }
+    },
+    "provenance": "seed"
+  }
+]

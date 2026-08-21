@@ -1,0 +1,97 @@
+[
+  {
+    "id": "utility-poles-jp",
+    "category": "utility-poles",
+    "region": "east-asia",
+    "country": "Japan",
+    "countryCode": "jp",
+    "tell": "Very tall slim concrete poles carrying dense bundles of wire, everywhere including cities.",
+    "detail": "Japan never buried its cables. Streets are strung with heavy wire bundles on thin round concrete poles, often with a transformer drum near the top and vertical address plates fixed to the shaft.",
+    "lookalikes": ["Taiwan", "South Korea", "Philippines"],
+    "art": { "kind": "pole", "material": "#b8b6b0", "profile": "round", "crossarms": 3, "arm": "#8a8880" },
+    "provenance": "seed"
+  },
+  {
+    "id": "utility-poles-us",
+    "category": "utility-poles",
+    "region": "north-america",
+    "country": "United States / Canada",
+    "tell": "Thick untreated wooden poles with a single horizontal crossarm.",
+    "detail": "North America runs on wood. Poles are heavy, dark-stained timber, often with a transformer can bolted partway up and a streetlight on a curved arm.",
+    "lookalikes": ["Australia", "Philippines", "Chile"],
+    "art": { "kind": "pole", "material": "#7a5a3a", "profile": "round", "crossarms": 1, "arm": "#5d452c" },
+    "provenance": "seed"
+  },
+  {
+    "id": "utility-poles-br",
+    "category": "utility-poles",
+    "region": "latin-america",
+    "country": "Brazil",
+    "countryCode": "br",
+    "tell": "Square-section concrete poles with a flat face, usually leaning slightly.",
+    "detail": "Brazil's poles are cast concrete with a rectangular cross-section rather than round, which reads as a flat grey slab from the road. Very common across the whole country.",
+    "lookalikes": ["Argentina", "Paraguay", "Mexico"],
+    "art": { "kind": "pole", "material": "#a9a7a1", "profile": "square", "crossarms": 2, "arm": "#8c8a84" },
+    "provenance": "seed"
+  },
+  {
+    "id": "utility-poles-id",
+    "category": "utility-poles",
+    "region": "southeast-asia",
+    "country": "Indonesia",
+    "countryCode": "id",
+    "tell": "Tapered round concrete poles, frequently painted at the base, with messy wire bundles.",
+    "detail": "Indonesian poles narrow noticeably towards the top and carry chaotic tangles of low-voltage and telecom cable. Combine with left-hand traffic and Indonesian-language signs.",
+    "lookalikes": ["Malaysia", "Philippines", "Thailand"],
+    "art": { "kind": "pole", "material": "#b0aea8", "profile": "tapered", "crossarms": 2, "arm": "#8f8d87" },
+    "provenance": "seed"
+  },
+  {
+    "id": "utility-poles-th",
+    "category": "utility-poles",
+    "region": "southeast-asia",
+    "country": "Thailand",
+    "countryCode": "th",
+    "tell": "Square concrete poles with regularly spaced holes down the shaft.",
+    "detail": "Thai concrete poles are cast with a row of circular voids through the shaft, a detail you can spot at distance once you know to look. Left-hand traffic and Thai script confirm.",
+    "lookalikes": ["Indonesia", "Malaysia", "Cambodia"],
+    "art": { "kind": "pole", "material": "#b4b2ac", "profile": "square", "crossarms": 2, "arm": "#93918b" },
+    "provenance": "seed"
+  },
+  {
+    "id": "utility-poles-ru",
+    "category": "utility-poles",
+    "region": "europe",
+    "country": "Russia",
+    "countryCode": "ru",
+    "tell": "Grey concrete poles, often with a wooden top section spliced on.",
+    "detail": "A very common Russian and post-Soviet pattern is a concrete base pole with a timber upper section bolted to it, which looks like two different poles joined halfway up.",
+    "lookalikes": ["Ukraine", "Belarus", "Kazakhstan"],
+    "art": { "kind": "pole", "material": "#a6a49e", "profile": "round", "crossarms": 1, "arm": "#7a5a3a" },
+    "provenance": "seed"
+  },
+  {
+    "id": "utility-poles-pl",
+    "category": "utility-poles",
+    "region": "europe",
+    "country": "Poland",
+    "countryCode": "pl",
+    "tell": "A-frame concrete poles, two legs meeting near the top.",
+    "detail": "Poland uses a distinctive twin-leg concrete pole that forms a narrow A shape. It stands out sharply from the single-shaft poles used in most of Europe.",
+    "lookalikes": ["Czechia", "Ukraine", "Slovakia"],
+    "art": { "kind": "pole", "material": "#adaba5", "profile": "a-frame", "crossarms": 1, "arm": "#8b8983" },
+    "provenance": "seed"
+  },
+  {
+    "id": "utility-poles-ph",
+    "category": "utility-poles",
+    "region": "southeast-asia",
+    "country": "Philippines",
+    "countryCode": "ph",
+    "tell": "Round concrete poles with extremely heavy cable bundles and many crossarms.",
+    "detail": "Philippine urban poles carry some of the densest visible cabling anywhere, with several stacked crossarms. English-language signage and jeepneys on the road confirm the country.",
+    "lookalikes": ["Indonesia", "Japan", "Thailand"],
+    "art": { "kind": "pole", "material": "#b2b0aa", "profile": "round", "crossarms": 4, "arm": "#8e8c86" },
+    "provenance": "seed"
+  }
+]

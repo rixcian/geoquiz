@@ -1,0 +1,71 @@
+[
+  {
+    "id": "google-car-black-africa",
+    "category": "google-car",
+    "region": "africa",
+    "country": "Kenya / Nigeria / Senegal / Tunisia",
+    "tell": "A black Google car, visible as dark bodywork at the bottom of the frame.",
+    "detail": "Most Street View cars are white or silver, so a black car is a strong regional narrowing tool. The black-car group is concentrated in a handful of African coverages; use language and road markings to pick between them.",
+    "lookalikes": ["Uganda", "Ghana"],
+    "art": { "kind": "glyph", "glyph": "◍", "bg": "#141414", "fg": "#f2f2f2", "shape": "circle" },
+    "provenance": "seed"
+  },
+  {
+    "id": "google-car-mn",
+    "category": "google-car",
+    "region": "east-asia",
+    "country": "Mongolia",
+    "countryCode": "mn",
+    "tell": "Dust-caked white car with a prominent roof rack, on unpaved steppe tracks.",
+    "detail": "Mongolian coverage is heavily off-road, so the car is filthy and the roof rack is unusually visible. The blur pattern around the rack is consistent enough to be a tell on its own.",
+    "lookalikes": ["Kazakhstan", "Kyrgyzstan"],
+    "art": { "kind": "glyph", "glyph": "◍", "bg": "#8a7a58", "fg": "#f2f2f2", "shape": "circle" },
+    "provenance": "seed"
+  },
+  {
+    "id": "google-car-in",
+    "category": "google-car",
+    "region": "south-asia",
+    "country": "India",
+    "countryCode": "in",
+    "tell": "Low-mounted snorkel camera, often on a small hatchback, with visibly softer image quality.",
+    "detail": "Much of India was shot with a lower-resolution rig mounted lower than usual, so the horizon sits differently and detail is mushy. Combine with Devanagari script and left-hand traffic.",
+    "lookalikes": ["Bangladesh", "Sri Lanka", "Nepal"],
+    "art": { "kind": "glyph", "glyph": "◍", "bg": "#ff9933", "fg": "#141414", "shape": "circle" },
+    "provenance": "seed"
+  },
+  {
+    "id": "google-car-lk",
+    "category": "google-car",
+    "region": "south-asia",
+    "country": "Sri Lanka",
+    "countryCode": "lk",
+    "tell": "Long thin antenna rising from the car, visible against the sky.",
+    "detail": "Sri Lankan coverage frequently shows a tall whip antenna. Together with left-hand traffic, Sinhala script and lush tropical vegetation it is a quick lock.",
+    "lookalikes": ["India", "Bangladesh"],
+    "art": { "kind": "glyph", "glyph": "◍", "bg": "#8d153a", "fg": "#eeb600", "shape": "circle" },
+    "provenance": "seed"
+  },
+  {
+    "id": "google-car-andes",
+    "category": "google-car",
+    "region": "latin-america",
+    "country": "Peru / Bolivia / Ecuador",
+    "tell": "Dirty light-coloured car with heavy dust streaks, on high-altitude roads.",
+    "detail": "The Andean coverages share a grubby car look from unpaved mountain roads. Altitude vegetation, adobe buildings and the specific Spanish signage separate the three.",
+    "lookalikes": ["Chile", "Colombia"],
+    "art": { "kind": "glyph", "glyph": "◍", "bg": "#a0763c", "fg": "#f2f2f2", "shape": "circle" },
+    "provenance": "seed"
+  },
+  {
+    "id": "google-car-clean",
+    "category": "google-car",
+    "region": "east-asia",
+    "country": "Japan / South Korea / Western Europe",
+    "tell": "No car visible at all, or only a small clean blur strip at the bottom.",
+    "detail": "The best-maintained coverages hide the vehicle almost entirely. Absence of a car is itself information: it points away from Africa, Central Asia and South America and towards high-budget coverage.",
+    "lookalikes": ["Singapore", "Taiwan"],
+    "art": { "kind": "glyph", "glyph": "◌", "bg": "#e8e8e6", "fg": "#4a4a4a", "shape": "circle" },
+    "provenance": "seed"
+  }
+]

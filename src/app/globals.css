@@ -1,0 +1,55 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --canvas: 250 250 249;
+  --surface: 255 255 255;
+  --raised: 244 244 242;
+  --line: 226 226 222;
+  --ink: 24 24 27;
+  --muted: 92 92 99;
+  --faint: 140 140 148;
+  --accent: 32 92 168;
+  --accent-ink: 255 255 255;
+  --good: 26 133 84;
+  --bad: 190 46 46;
+}
+
+.dark {
+  --canvas: 16 17 19;
+  --surface: 24 25 28;
+  --raised: 33 35 39;
+  --line: 51 54 59;
+  --ink: 240 240 238;
+  --muted: 165 167 172;
+  --faint: 120 123 130;
+  --accent: 96 158 240;
+  --accent-ink: 12 20 32;
+  --good: 74 190 130;
+  --bad: 240 116 108;
+}
+
+html {
+  color-scheme: light;
+}
+
+html.dark {
+  color-scheme: dark;
+}
+
+body {
+  background-color: rgb(var(--canvas));
+  color: rgb(var(--ink));
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Keep long option lists from bouncing the page on mobile. */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+  }
+}

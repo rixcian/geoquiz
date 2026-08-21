@@ -1,0 +1,91 @@
+[
+  {
+    "id": "road-signs-alto",
+    "category": "road-signs",
+    "region": "latin-america",
+    "country": "Mexico / Central America",
+    "tell": "Octagonal stop sign reading ALTO.",
+    "detail": "Spanish-speaking countries split on this word. ALTO is Mexico and most of Central America; PARE is used across South America. Getting the word right narrows a whole continent to a region.",
+    "lookalikes": ["Colombia", "Guatemala", "Honduras"],
+    "art": { "kind": "glyph", "glyph": "ALTO", "bg": "#c1272d", "fg": "#ffffff", "shape": "octagon" },
+    "provenance": "seed"
+  },
+  {
+    "id": "road-signs-pare",
+    "category": "road-signs",
+    "region": "latin-america",
+    "country": "Brazil / Argentina / Chile",
+    "tell": "Octagonal stop sign reading PARE.",
+    "detail": "PARE covers most of South America in both Portuguese and Spanish. Once you see it, use road-line colour to split Brazil (yellow) from Argentina and Chile (white).",
+    "lookalikes": ["Mexico", "Peru", "Uruguay"],
+    "art": { "kind": "glyph", "glyph": "PARE", "bg": "#c1272d", "fg": "#ffffff", "shape": "octagon" },
+    "provenance": "seed"
+  },
+  {
+    "id": "road-signs-diamond",
+    "category": "road-signs",
+    "region": "north-america",
+    "country": "Americas / Ireland / Japan / Australia",
+    "tell": "Yellow diamond warning signs instead of red-bordered triangles.",
+    "detail": "The world splits into diamond and triangle warning signs. Diamonds: the Americas, Ireland, Japan, Australia and New Zealand. Triangles: continental Europe, most of Africa and Asia. This is a one-glance hemisphere-level filter.",
+    "lookalikes": ["New Zealand", "Canada"],
+    "art": { "kind": "glyph", "glyph": "!", "bg": "#f2c500", "fg": "#141414", "shape": "diamond" },
+    "provenance": "seed"
+  },
+  {
+    "id": "road-signs-triangle",
+    "category": "road-signs",
+    "region": "europe",
+    "country": "Continental Europe",
+    "tell": "Red-bordered white triangle warning signs.",
+    "detail": "The Vienna Convention shape, used across Europe and much of Africa and Asia. Its presence rules out North America, Ireland, Japan and Australasia in a single look.",
+    "lookalikes": ["Russia", "Turkey", "South Africa"],
+    "art": { "kind": "glyph", "glyph": "!", "bg": "#ffffff", "fg": "#c1272d", "shape": "triangle" },
+    "provenance": "seed"
+  },
+  {
+    "id": "road-signs-speed-eu",
+    "category": "road-signs",
+    "region": "europe",
+    "country": "Europe (Vienna Convention)",
+    "tell": "Speed limits in a white circle with a thick red ring.",
+    "detail": "Circular red-ringed speed limits are the European standard and are also used across most of Asia, Africa and South America. The number is in kilometres per hour.",
+    "lookalikes": ["Australia", "South Africa"],
+    "art": { "kind": "glyph", "glyph": "80", "bg": "#ffffff", "fg": "#c1272d", "shape": "circle" },
+    "provenance": "seed"
+  },
+  {
+    "id": "road-signs-speed-us",
+    "category": "road-signs",
+    "region": "north-america",
+    "country": "United States",
+    "countryCode": "us",
+    "tell": "Rectangular black-on-white sign reading SPEED LIMIT above the number.",
+    "detail": "The US spells it out on a plain white rectangle with no red ring, in miles per hour. Canada uses a rectangle too but writes MAXIMUM and uses km/h, which separates the two.",
+    "lookalikes": ["Canada"],
+    "art": { "kind": "glyph", "glyph": "55", "bg": "#ffffff", "fg": "#141414", "shape": "square" },
+    "provenance": "seed"
+  },
+  {
+    "id": "road-signs-chevron-eu",
+    "category": "road-signs",
+    "region": "europe",
+    "country": "Europe (common pattern)",
+    "tell": "Red-and-white chevron boards on the outside of bends.",
+    "detail": "Chevron colour is a useful regional tag. Red and white dominates Europe; black on yellow is common in the Americas, Japan and parts of Asia; some countries use black on white.",
+    "lookalikes": ["Turkey", "Morocco"],
+    "art": { "kind": "glyph", "glyph": "»", "bg": "#ffffff", "fg": "#c1272d", "shape": "square" },
+    "provenance": "seed"
+  },
+  {
+    "id": "road-signs-chevron-am",
+    "category": "road-signs",
+    "region": "north-america",
+    "country": "United States / Japan / Latin America",
+    "tell": "Black chevrons on a yellow board.",
+    "detail": "Yellow chevron boards go with the yellow diamond warning-sign family. Seeing yellow chevrons alongside yellow centre lines is a strong North America pull.",
+    "lookalikes": ["Japan", "Mexico"],
+    "art": { "kind": "glyph", "glyph": "»", "bg": "#f2c500", "fg": "#141414", "shape": "square" },
+    "provenance": "seed"
+  }
+]

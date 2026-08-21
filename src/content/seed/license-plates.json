@@ -1,0 +1,234 @@
+[
+  {
+    "id": "license-plates-nl",
+    "category": "license-plates",
+    "region": "europe",
+    "country": "Netherlands",
+    "countryCode": "nl",
+    "tell": "Yellow plate, black text, blue EU strip reading NL. Yellow on both front and rear.",
+    "detail": "Only a handful of countries run yellow plates at the front as well as the rear. The Netherlands is the common one in Europe; Luxembourg is the trap. Dutch plates group characters with dashes.",
+    "lookalikes": ["Luxembourg", "United Kingdom"],
+    "art": {
+      "kind": "plate",
+      "bg": "#f2c218",
+      "fg": "#141414",
+      "text": "XX-123-Y",
+      "leftStrip": { "color": "#0a3d91", "text": "NL", "textColor": "#ffffff" },
+      "ratio": "eu"
+    },
+    "provenance": "seed"
+  },
+  {
+    "id": "license-plates-lu",
+    "category": "license-plates",
+    "region": "europe",
+    "country": "Luxembourg",
+    "countryCode": "lu",
+    "tell": "Yellow plate front and rear with a blue strip reading L.",
+    "detail": "The classic Netherlands lookalike. The single-letter L code is the giveaway. Luxembourg also mixes French and German signage, which the Netherlands never does.",
+    "lookalikes": ["Netherlands"],
+    "art": {
+      "kind": "plate",
+      "bg": "#f2c218",
+      "fg": "#141414",
+      "text": "AB 1234",
+      "leftStrip": { "color": "#0a3d91", "text": "L", "textColor": "#ffffff" },
+      "ratio": "eu"
+    },
+    "provenance": "seed"
+  },
+  {
+    "id": "license-plates-gb",
+    "category": "license-plates",
+    "region": "europe",
+    "country": "United Kingdom",
+    "countryCode": "gb",
+    "tell": "White at the front, yellow at the rear. Same car, two plate colours.",
+    "detail": "Britain is the country where the front and rear plates disagree: white front, yellow rear. Combined with left-hand traffic and double yellow no-parking lines, this is close to conclusive.",
+    "lookalikes": ["Netherlands", "Ireland"],
+    "art": {
+      "kind": "plate",
+      "bg": "#f2c218",
+      "fg": "#141414",
+      "text": "AB12 CDE",
+      "leftStrip": { "color": "#0a3d91", "text": "UK", "textColor": "#ffffff" },
+      "ratio": "eu"
+    },
+    "provenance": "seed"
+  },
+  {
+    "id": "license-plates-it",
+    "category": "license-plates",
+    "region": "europe",
+    "country": "Italy",
+    "countryCode": "it",
+    "tell": "Blue strips on BOTH sides: I on the left, province code and year on the right.",
+    "detail": "Two blue strips is a short list. Italy's right-hand strip carries a two-letter province code above the registration year, so it reads as text rather than a blank block.",
+    "lookalikes": ["Spain", "France"],
+    "art": {
+      "kind": "plate",
+      "bg": "#f6f6f4",
+      "fg": "#141414",
+      "text": "AB 123 CD",
+      "leftStrip": { "color": "#0a3d91", "text": "I", "textColor": "#ffffff" },
+      "rightStrip": { "color": "#0a3d91", "text": "RM", "textColor": "#ffffff" },
+      "ratio": "eu"
+    },
+    "provenance": "seed"
+  },
+  {
+    "id": "license-plates-es",
+    "category": "license-plates",
+    "region": "europe",
+    "country": "Spain",
+    "countryCode": "es",
+    "tell": "Blue strips on both sides, but the right-hand one is plain blue with no text.",
+    "detail": "Spain is the other two-strip country. The right strip is an empty blue block, where Italy's carries a province code. Spanish plates also run four digits then three letters.",
+    "lookalikes": ["Italy"],
+    "art": {
+      "kind": "plate",
+      "bg": "#f6f6f4",
+      "fg": "#141414",
+      "text": "1234 BCD",
+      "leftStrip": { "color": "#0a3d91", "text": "E", "textColor": "#ffffff" },
+      "rightStrip": { "color": "#0a3d91" },
+      "ratio": "eu"
+    },
+    "provenance": "seed"
+  },
+  {
+    "id": "license-plates-fr",
+    "category": "license-plates",
+    "region": "europe",
+    "country": "France",
+    "countryCode": "fr",
+    "tell": "Blue strips both sides; the right one shows a department number over a regional logo.",
+    "detail": "France's right-hand strip is a two-digit department number with a small regional emblem beneath. Format is two letters, three digits, two letters.",
+    "lookalikes": ["Italy", "Spain"],
+    "art": {
+      "kind": "plate",
+      "bg": "#f6f6f4",
+      "fg": "#141414",
+      "text": "AB-123-CD",
+      "leftStrip": { "color": "#0a3d91", "text": "F", "textColor": "#ffffff" },
+      "rightStrip": { "color": "#0a3d91", "text": "75", "textColor": "#ffffff" },
+      "ratio": "eu"
+    },
+    "provenance": "seed"
+  },
+  {
+    "id": "license-plates-dk",
+    "category": "license-plates",
+    "region": "europe",
+    "country": "Denmark",
+    "countryCode": "dk",
+    "tell": "White plate with a bold red border running all the way round.",
+    "detail": "The red frame is unique in Europe and readable at low resolution. Back it up with Danish signage and the flat, wind-swept farmland.",
+    "lookalikes": ["Norway", "Sweden"],
+    "art": {
+      "kind": "plate",
+      "bg": "#f8f8f6",
+      "fg": "#141414",
+      "text": "AB 12 345",
+      "border": "#c62828",
+      "leftStrip": { "color": "#0a3d91", "text": "DK", "textColor": "#ffffff" },
+      "ratio": "eu"
+    },
+    "provenance": "seed"
+  },
+  {
+    "id": "license-plates-br",
+    "category": "license-plates",
+    "region": "latin-america",
+    "country": "Brazil",
+    "countryCode": "br",
+    "tell": "Mercosur plate: blue header band across the top reading BRASIL.",
+    "detail": "Mercosur plates all share the blue top band; the country name written in it is what separates them. Brazil's band reads BRASIL and the plate carries a Brazilian flag at the left.",
+    "lookalikes": ["Argentina", "Uruguay", "Paraguay"],
+    "art": {
+      "kind": "plate",
+      "bg": "#f7f7f5",
+      "fg": "#141414",
+      "text": "ABC1D23",
+      "topBand": { "color": "#12409c", "text": "BRASIL", "textColor": "#ffffff" },
+      "ratio": "eu"
+    },
+    "provenance": "seed"
+  },
+  {
+    "id": "license-plates-ar",
+    "category": "license-plates",
+    "region": "latin-america",
+    "country": "Argentina",
+    "countryCode": "ar",
+    "tell": "Mercosur plate with ARGENTINA in the blue header; older cars carry black plates.",
+    "detail": "Same Mercosur frame as Brazil with a different country word. Argentina is also the Mercosur country where plenty of older vehicles still wear plain black plates with white text.",
+    "lookalikes": ["Brazil", "Uruguay"],
+    "art": {
+      "kind": "plate",
+      "bg": "#f7f7f5",
+      "fg": "#141414",
+      "text": "AB 123 CD",
+      "topBand": { "color": "#12409c", "text": "ARGENTINA", "textColor": "#ffffff" },
+      "ratio": "eu"
+    },
+    "provenance": "seed"
+  },
+  {
+    "id": "license-plates-jp",
+    "category": "license-plates",
+    "region": "east-asia",
+    "country": "Japan",
+    "countryCode": "jp",
+    "tell": "Small plate with Japanese characters on the top row; kei cars run yellow with black text.",
+    "detail": "Japanese plates put a city name and class code in kanji and hiragana above the number. White plates are ordinary cars, yellow plates with black text are kei cars, and green text marks commercial vehicles.",
+    "lookalikes": ["South Korea", "Taiwan"],
+    "art": {
+      "kind": "plate",
+      "bg": "#f4d434",
+      "fg": "#141414",
+      "text": "12-34",
+      "topBand": { "color": "#f4d434", "text": "品川 500", "textColor": "#141414" },
+      "ratio": "jp"
+    },
+    "provenance": "seed"
+  },
+  {
+    "id": "license-plates-us",
+    "category": "license-plates",
+    "region": "north-america",
+    "country": "United States",
+    "countryCode": "us",
+    "tell": "Short, wide plate with no EU strip, a state name across the top and often a graphic background.",
+    "detail": "US plates are visibly squarer than European ones and the design changes state to state. Even blurred, the coloured graphic backgrounds and the header text band are unmistakable.",
+    "lookalikes": ["Canada", "Mexico"],
+    "art": {
+      "kind": "plate",
+      "bg": "#eef3f8",
+      "fg": "#14346b",
+      "text": "ABC 1234",
+      "topBand": { "color": "#eef3f8", "text": "CALIFORNIA", "textColor": "#c0392b" },
+      "ratio": "us"
+    },
+    "provenance": "seed"
+  },
+  {
+    "id": "license-plates-au",
+    "category": "license-plates",
+    "region": "oceania",
+    "country": "Australia",
+    "countryCode": "au",
+    "tell": "Wide plate with a state slogan across the bottom, varied colour schemes by state.",
+    "detail": "Australian plates carry state slogans such as the NSW or Victoria wording along the lower edge. Colours vary widely by state, which is itself a useful regional narrowing tool once you know the sets.",
+    "lookalikes": ["New Zealand", "United States"],
+    "art": {
+      "kind": "plate",
+      "bg": "#f7f7f5",
+      "fg": "#1a1a1a",
+      "text": "ABC 12D",
+      "topBand": { "color": "#f7f7f5", "text": "NEW SOUTH WALES", "textColor": "#1a5b9e" },
+      "ratio": "us"
+    },
+    "provenance": "seed"
+  }
+]

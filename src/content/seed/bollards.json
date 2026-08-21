@@ -1,0 +1,220 @@
+[
+  {
+    "id": "bollards-pl",
+    "category": "bollards",
+    "region": "europe",
+    "country": "Poland",
+    "countryCode": "pl",
+    "tell": "White post, black band across the top, red rectangular reflector below it.",
+    "detail": "Poland's roadside posts are white with a dark band wrapped around the head and a red reflector facing oncoming traffic (white facing away). Pair the bollard with white-only road lines and Polish text on signs to lock it in.",
+    "lookalikes": ["Czechia", "Slovakia", "Lithuania"],
+    "art": {
+      "kind": "bollard",
+      "shape": "flat",
+      "body": "#f4f4f1",
+      "bands": [{ "color": "#1b1b1b", "top": 6, "height": 10 }],
+      "reflector": { "color": "#cc2222", "shape": "rect", "top": 20 }
+    },
+    "provenance": "seed"
+  },
+  {
+    "id": "bollards-cz",
+    "category": "bollards",
+    "region": "europe",
+    "country": "Czechia",
+    "countryCode": "cz",
+    "tell": "White post with a slanted dark head and an orange reflector.",
+    "detail": "Czech bollards read as a white post whose top is cut at an angle, with an orange/amber reflector rather than Poland's red. Czech and Slovak posts are close cousins, so fall back on language: Czech uses ř and ě.",
+    "lookalikes": ["Slovakia", "Poland"],
+    "art": {
+      "kind": "bollard",
+      "shape": "slanted",
+      "body": "#f4f4f1",
+      "bands": [{ "color": "#2a2a2a", "top": 4, "height": 12 }],
+      "reflector": { "color": "#e8811a", "shape": "rect", "top": 22 }
+    },
+    "provenance": "seed"
+  },
+  {
+    "id": "bollards-de",
+    "category": "bollards",
+    "region": "europe",
+    "country": "Germany",
+    "countryCode": "de",
+    "tell": "Flat-topped white post, wide and slab-like rather than round.",
+    "detail": "German Leitpfosten are broad white posts with a flat top and black reflector housings set into the face. They look chunkier in profile than the slimmer posts used further east.",
+    "lookalikes": ["Austria", "Switzerland"],
+    "art": {
+      "kind": "bollard",
+      "shape": "flat",
+      "body": "#f6f6f4",
+      "bands": [{ "color": "#242424", "top": 14, "height": 7 }],
+      "reflector": { "color": "#d8d8d8", "shape": "strip", "top": 15 }
+    },
+    "provenance": "seed"
+  },
+  {
+    "id": "bollards-fr",
+    "category": "bollards",
+    "region": "europe",
+    "country": "France",
+    "countryCode": "fr",
+    "tell": "White post with a red band at the very top and red reflector strips.",
+    "detail": "French balises are white with red at the head. Confirm with French road markings: white lines, and the distinctive French practice of a solid white line pair through bends.",
+    "lookalikes": ["Belgium", "Spain"],
+    "art": {
+      "kind": "bollard",
+      "shape": "domed",
+      "body": "#f5f5f2",
+      "bands": [{ "color": "#c62828", "top": 3, "height": 9 }],
+      "reflector": { "color": "#c62828", "shape": "strip", "top": 24 }
+    },
+    "provenance": "seed"
+  },
+  {
+    "id": "bollards-nl",
+    "category": "bollards",
+    "region": "europe",
+    "country": "Netherlands",
+    "countryCode": "nl",
+    "tell": "Slim white post with a green-tinted reflector on the near side.",
+    "detail": "Dutch posts are noticeably slender. The green reflector is the tell most players use, alongside the extremely flat terrain, dense cycle paths and yellow license plates.",
+    "lookalikes": ["Belgium", "Germany"],
+    "art": {
+      "kind": "bollard",
+      "shape": "domed",
+      "body": "#f7f7f5",
+      "reflector": { "color": "#2e9e5b", "shape": "circle", "top": 18 }
+    },
+    "provenance": "seed"
+  },
+  {
+    "id": "bollards-no",
+    "category": "bollards",
+    "region": "europe",
+    "country": "Norway",
+    "countryCode": "no",
+    "tell": "Tall guide post with an orange reflector band, often alongside yellow centre lines.",
+    "detail": "Nordic guide posts are built for snow: tall, thin and highly reflective. Norway pairs them with yellow centre lines, which immediately separates it from Sweden and Finland.",
+    "lookalikes": ["Sweden", "Finland"],
+    "art": {
+      "kind": "bollard",
+      "shape": "tapered",
+      "body": "#efefec",
+      "bands": [{ "color": "#1f1f1f", "top": 10, "height": 6 }],
+      "reflector": { "color": "#f0821e", "shape": "strip", "top": 11 }
+    },
+    "provenance": "seed"
+  },
+  {
+    "id": "bollards-fi",
+    "category": "bollards",
+    "region": "europe",
+    "country": "Finland",
+    "countryCode": "fi",
+    "tell": "Tall snow post with a yellow-amber reflector, white road lines.",
+    "detail": "Finland uses the same tall Nordic guide-post concept as Norway but keeps white centre lines. Finnish is unmistakable on signs: long words, doubled vowels, ä and ö.",
+    "lookalikes": ["Sweden", "Norway", "Estonia"],
+    "art": {
+      "kind": "bollard",
+      "shape": "tapered",
+      "body": "#efefec",
+      "reflector": { "color": "#e8c31a", "shape": "strip", "top": 12 }
+    },
+    "provenance": "seed"
+  },
+  {
+    "id": "bollards-ro",
+    "category": "bollards",
+    "region": "europe",
+    "country": "Romania",
+    "countryCode": "ro",
+    "tell": "Squat concrete post, white with a dark painted cap.",
+    "detail": "Romania still has many old-style concrete marker posts on secondary roads, visibly heavier and rougher than the moulded plastic posts used in Western Europe. Confirm with Romanian text (ș, ț, ă) and the ubiquitous horse carts on rural roads.",
+    "lookalikes": ["Bulgaria", "Moldova", "Ukraine"],
+    "art": {
+      "kind": "bollard",
+      "shape": "square",
+      "body": "#e6e4dd",
+      "bands": [{ "color": "#2b2b2b", "top": 0, "height": 14 }],
+      "reflector": { "color": "#cc2222", "shape": "circle", "top": 24 }
+    },
+    "provenance": "seed"
+  },
+  {
+    "id": "bollards-ua",
+    "category": "bollards",
+    "region": "europe",
+    "country": "Ukraine",
+    "countryCode": "ua",
+    "tell": "Concrete post, white with a black band, next to Cyrillic signage using і and ї.",
+    "detail": "Ukrainian marker posts are concrete and utilitarian. The decisive tell is not the post but the script beside it: Ukrainian Cyrillic uses і, ї and є, none of which appear in Russian.",
+    "lookalikes": ["Russia", "Belarus", "Moldova"],
+    "art": {
+      "kind": "bollard",
+      "shape": "square",
+      "body": "#e8e6df",
+      "bands": [{ "color": "#212121", "top": 5, "height": 11 }],
+      "reflector": { "color": "#cc2222", "shape": "rect", "top": 22 }
+    },
+    "provenance": "seed"
+  },
+  {
+    "id": "bollards-id",
+    "category": "bollards",
+    "region": "southeast-asia",
+    "country": "Indonesia",
+    "countryCode": "id",
+    "tell": "Chunky black-and-white banded concrete post on a left-hand-drive-side road.",
+    "detail": "Indonesian roadside posts and kerbs are painted in bold black-and-white bands. Combine with left-hand traffic, Latin-script Indonesian signage and the frequent black Google car.",
+    "lookalikes": ["Malaysia", "Philippines", "Thailand"],
+    "art": {
+      "kind": "bollard",
+      "shape": "square",
+      "body": "#f0efe9",
+      "bands": [
+        { "color": "#1a1a1a", "top": 8, "height": 16 },
+        { "color": "#1a1a1a", "top": 46, "height": 16 }
+      ]
+    },
+    "provenance": "seed"
+  },
+  {
+    "id": "bollards-br",
+    "category": "bollards",
+    "region": "latin-america",
+    "country": "Brazil",
+    "countryCode": "br",
+    "tell": "White post with a red reflector, set against yellow centre lines.",
+    "detail": "Brazil's marker posts are unremarkable on their own; the surrounding context does the work. Yellow centre lines plus Portuguese signage plus the Mercosur plate header narrows it to Brazil quickly.",
+    "lookalikes": ["Argentina", "Paraguay", "Uruguay"],
+    "art": {
+      "kind": "bollard",
+      "shape": "domed",
+      "body": "#f3f3ef",
+      "reflector": { "color": "#cc2222", "shape": "rect", "top": 18 }
+    },
+    "provenance": "seed"
+  },
+  {
+    "id": "bollards-jp",
+    "category": "bollards",
+    "region": "east-asia",
+    "country": "Japan",
+    "countryCode": "jp",
+    "tell": "Orange-and-white striped snow pole rather than a bollard, often top-down arrow markers.",
+    "detail": "Japan largely skips European-style bollards. Snowy prefectures use tall orange-and-white striped poles, and many roads use downward-pointing arrow markers mounted overhead to show the road edge under snow.",
+    "lookalikes": ["South Korea"],
+    "art": {
+      "kind": "bollard",
+      "shape": "tapered",
+      "body": "#f5f5f2",
+      "bands": [
+        { "color": "#f26b21", "top": 4, "height": 12 },
+        { "color": "#f26b21", "top": 30, "height": 12 },
+        { "color": "#f26b21", "top": 56, "height": 12 }
+      ]
+    },
+    "provenance": "seed"
+  }
+]

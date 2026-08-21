@@ -1,0 +1,69 @@
+[
+  {
+    "id": "landscape-lht",
+    "category": "landscape",
+    "region": "oceania",
+    "country": "Left-hand traffic countries",
+    "tell": "Cars drive on the left; the Google car sits on the left side of the road.",
+    "detail": "Roughly a third of the world drives on the left: the UK and Ireland, most of southern and eastern Africa, India, Pakistan, Bangladesh, Sri Lanka, Thailand, Malaysia, Indonesia, Japan, Australia and New Zealand. It halves the map in one glance.",
+    "lookalikes": ["Right-hand traffic countries"],
+    "art": { "kind": "glyph", "glyph": "←", "bg": "#2b4c7e", "fg": "#ffffff", "shape": "circle" },
+    "provenance": "seed"
+  },
+  {
+    "id": "landscape-sun-south",
+    "category": "landscape",
+    "region": "oceania",
+    "country": "Southern hemisphere",
+    "tell": "The sun sits in the northern half of the sky; shadows point south at midday.",
+    "detail": "In the southern hemisphere the sun tracks through the north. Reading shadow direction against the compass fixes your hemisphere before you have identified a single sign, which is often the difference between a 2,000 km error and a 200 km one.",
+    "lookalikes": ["Northern hemisphere", "Equatorial zone"],
+    "art": { "kind": "glyph", "glyph": "☼", "bg": "#e8a020", "fg": "#141414", "shape": "circle" },
+    "provenance": "seed"
+  },
+  {
+    "id": "landscape-tld",
+    "category": "landscape",
+    "region": "europe",
+    "country": "Domain suffixes on shopfronts",
+    "tell": "Web addresses painted on vans and shop signs end in a country code.",
+    "detail": "A .pl, .ro, .hu or .id on the side of a van answers the question outright. Always read vehicle liveries and shop windows; phone-number formats work the same way.",
+    "lookalikes": ["Generic .com signage"],
+    "art": { "kind": "glyph", "glyph": ".pl", "bg": "#1f1f1f", "fg": "#6ee7b7", "shape": "square" },
+    "provenance": "seed"
+  },
+  {
+    "id": "landscape-red-soil",
+    "category": "landscape",
+    "region": "oceania",
+    "country": "Australia (outback)",
+    "countryCode": "au",
+    "tell": "Deep red-ochre soil with dry eucalyptus scrub.",
+    "detail": "Australian inland soil colour is distinctive and pairs with eucalyptus, spinifex and very long straight roads. Similar red soils appear in parts of Africa and Brazil, so check the vegetation and traffic side too.",
+    "lookalikes": ["Brazil", "South Africa", "Namibia"],
+    "art": { "kind": "glyph", "glyph": "◈", "bg": "#a8412a", "fg": "#f2e2c8", "shape": "square" },
+    "provenance": "seed"
+  },
+  {
+    "id": "landscape-red-houses",
+    "category": "landscape",
+    "region": "europe",
+    "country": "Sweden / Norway / Finland",
+    "tell": "Timber houses painted deep falu red with white trim.",
+    "detail": "The Nordic red-and-white timber house is one of the most reliable architecture tells in Europe. Split the three countries afterwards with line colour and language.",
+    "lookalikes": ["Estonia", "Denmark"],
+    "art": { "kind": "glyph", "glyph": "⌂", "bg": "#8b2c22", "fg": "#f5f5f0", "shape": "square" },
+    "provenance": "seed"
+  },
+  {
+    "id": "landscape-guardrail",
+    "category": "landscape",
+    "region": "europe",
+    "country": "Guardrail post spacing",
+    "tell": "The shape of the posts holding up the crash barrier: I-beam, C-channel or sigma.",
+    "detail": "Guardrail post profiles are surprisingly national. Some countries use flat I-beams, others a C-channel or a Greek-sigma profile, and post spacing varies too. It is a slow tell to learn but very hard to fake.",
+    "lookalikes": ["Nearby countries with shared standards"],
+    "art": { "kind": "glyph", "glyph": "⌶", "bg": "#5a5f66", "fg": "#f0f0ee", "shape": "square" },
+    "provenance": "seed"
+  }
+]
