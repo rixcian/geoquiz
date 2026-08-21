@@ -143,7 +143,7 @@ export function DeckBuilder({ cards }: { cards: Card[] }) {
                 onClick={() => toggle(regions, setRegions, region.id)}
                 className={`rounded-xl border px-3.5 py-2 text-sm font-semibold transition-all duration-150 active:translate-y-[2px] ${
                   active
-                    ? "border-info/60 bg-info/15 text-info shadow-[0_3px_0_rgb(var(--info-deep))]"
+                    ? "border-brand/60 bg-brand/15 text-brand shadow-[0_3px_0_rgb(var(--brand-deep))]"
                     : "border-line/80 bg-surface/70 text-muted hover:bg-raised hover:text-ink"
                 }`}
               >
@@ -166,7 +166,7 @@ export function DeckBuilder({ cards }: { cards: Card[] }) {
           </div>
 
           <div className="flex flex-wrap items-center gap-1.5">
-            <Chip value={counts.due.length} label="due" tone={counts.due.length ? "info" : "flat"} />
+            <Chip value={counts.due.length} label="due" tone={counts.due.length ? "gold" : "flat"} />
             <Chip value={counts.fresh.length} label="new" tone="flat" />
             <Chip value={counts.later.length} label="scheduled" tone="flat" />
           </div>
@@ -189,11 +189,11 @@ export function DeckBuilder({ cards }: { cards: Card[] }) {
   );
 }
 
-function Chip({ value, label, tone }: { value: number; label: string; tone: "info" | "flat" }) {
+function Chip({ value, label, tone }: { value: number; label: string; tone: "gold" | "flat" }) {
   return (
     <span
       className={`inline-flex items-baseline gap-1 rounded-lg px-2 py-1 text-xs font-semibold ${
-        tone === "info" ? "bg-info/15 text-info" : "bg-raised/70 text-faint"
+        tone === "gold" ? "bg-gold/15 text-gold" : "bg-raised/70 text-faint"
       }`}
     >
       <span className="font-display text-sm font-bold tabular-nums">{value}</span>
@@ -208,7 +208,7 @@ function Heading({ label, hint, onClear }: { label: string; hint: string; onClea
       <h2 className="font-display text-xs font-bold uppercase tracking-[0.16em] text-faint">{label}</h2>
       <span className="text-xs text-faint/70">{hint}</span>
       {onClear ? (
-        <button type="button" onClick={onClear} className="ml-auto text-xs font-semibold text-info hover:underline">
+        <button type="button" onClick={onClear} className="ml-auto text-xs font-semibold text-brand hover:underline">
           Clear
         </button>
       ) : null}

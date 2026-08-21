@@ -143,18 +143,26 @@ client-side, so there is nothing to provision.
 
 The palette is taken from the GeoGuessr key art: a deep indigo-purple ground
 that lifts to a brighter violet toward the top-right, the red of the wordmark
-plate and map pin, the green and blue of the globe's land and ocean, and white
-type.
-
-Roles are assigned so all four read without fighting each other:
+plate and map pin, the green of the globe's land, and white type. The globe's
+ocean blue is deliberately left out — on a purple ground it read as a third
+competing hue with nothing to say.
 
 | Colour | Role |
 | --- | --- |
-| Red | Identity — logo mark, headline emphasis, primary call to action |
+| Red | Identity and intent — logo mark, headline emphasis, primary button, every active or selected state |
 | Green | Correct, progress, accuracy. Nothing else — it never appears as chrome |
-| Blue | Selection and links — active nav, chosen regions, focus rings, counts |
-| Red, outline weight | A missed card, never confusable with the solid CTA |
-| Gold | Streaks and score — the one tone the key art does not supply |
+| Gold | Work waiting and streaks |
+| Red, outline weight | A missed card, never confusable with the solid button |
+
+Category tints come from a single hue per category in `lib/taxonomy.ts`;
+saturation and lightness are theme tokens, so one number produces a tint that
+works in both modes. Those hues skip roughly 180–270: blue is out of the
+palette, and indigo is the ground colour, so a tint in that band would either
+reintroduce blue or vanish into the background.
+
+Blue does still appear inside card artwork — the EU strip on a Dutch plate, the
+Mercosur header on a Brazilian one. That is content, not palette: those plates
+are blue in the world, and recolouring them would make the cards wrong.
 
 Every colour in the app is declared in one block at the top of
 `src/app/globals.css`, so correcting a shade is a one-line edit. Light mode is a

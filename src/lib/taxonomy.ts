@@ -4,19 +4,24 @@ import type { Category, CategoryId, Region, RegionId } from "./types";
  * `hue` is a raw HSL hue. Saturation and lightness come from theme tokens, so
  * one number per category produces a tint that works in both light and dark
  * without maintaining two palettes.
+ *
+ * The hues deliberately skip roughly 180-270. That band is blue through
+ * indigo: blue is out of the palette, and indigo is the ground colour, so a
+ * tint there would either reintroduce it or vanish into the background. The
+ * eight values below spread evenly across what is left.
  */
 export const CATEGORIES: Category[] = [
   {
     id: "bollards",
     name: "Bollards",
     blurb: "Shape, banding and reflector colour. Pins a country faster than almost anything else on the road.",
-    hue: 34,
+    hue: 30,
   },
   {
     id: "utility-poles",
     name: "Utility poles",
     blurb: "Wood, round concrete or square concrete. Splits the world into big, confident regions.",
-    hue: 205,
+    hue: 52,
   },
   {
     id: "road-lines",
@@ -28,25 +33,25 @@ export const CATEGORIES: Category[] = [
     id: "license-plates",
     name: "License plates",
     blurb: "Colour, aspect ratio, side strips and header bands. Still readable when badly blurred.",
-    hue: 276,
+    hue: 300,
   },
   {
     id: "road-signs",
     name: "Road signs",
     blurb: "Sign shapes, stop-sign wording, speed-limit style and chevron colours.",
-    hue: 6,
+    hue: 4,
   },
   {
     id: "scripts",
     name: "Scripts & language",
     blurb: "Alphabets, and the specific letters that separate neighbours sharing one script.",
-    hue: 178,
+    hue: 170,
   },
   {
     id: "google-car",
     name: "Google car",
     blurb: "The camera vehicle: colour, roof rack, snorkel mounts, antennas and blur.",
-    hue: 322,
+    hue: 335,
   },
   {
     id: "landscape",

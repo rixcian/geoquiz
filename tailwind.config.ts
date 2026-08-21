@@ -31,8 +31,6 @@ const config: Config = {
         good: "rgb(var(--good) / <alpha-value>)",
         bad: "rgb(var(--bad) / <alpha-value>)",
         gold: "rgb(var(--gold) / <alpha-value>)",
-        info: "rgb(var(--info) / <alpha-value>)",
-        "info-deep": "rgb(var(--info-deep) / <alpha-value>)",
         // Per-category tint, set by the component as an inline custom property.
         tint: "hsl(var(--tint-h) var(--tint-s) var(--tint-l) / <alpha-value>)",
       },

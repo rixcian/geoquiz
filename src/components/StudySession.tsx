@@ -232,7 +232,7 @@ export function StudySession({ cards }: { cards: Card[] }) {
                 href={current.source.url}
                 target="_blank"
                 rel="noreferrer noopener"
-                className="mt-3 inline-block text-xs font-semibold text-info hover:underline"
+                className="mt-3 inline-block text-xs font-semibold text-brand hover:underline"
               >
                 {current.source.label} ↗
               </a>

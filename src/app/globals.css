@@ -9,13 +9,13 @@
  *            top-right, which is where the art's light comes from
  *   red      the wordmark plate and the map pin -- the brand colour
  *   green    the globe's land
- *   blue     the globe's ocean
  *   white    clouds, wordmark type, the pin's eye
  *
- * Roles are assigned so all four read without fighting: red carries identity
- * and the primary call to action, green means correct, blue marks selection,
- * and a miss is red at outline weight so it never reads as the solid CTA.
- * Gold is the one addition -- streaks need a tone the key art does not supply.
+ * The globe's ocean blue is deliberately left out: on a purple ground it read
+ * as a third competing hue with nothing to say. Red now carries identity, the
+ * primary call to action and selection; green means correct and only correct;
+ * gold marks work waiting and streaks; a miss is red at outline weight so it
+ * never reads as the solid CTA.
  *
  * Every colour in the app is declared here and nowhere else.
  */
@@ -38,10 +38,6 @@ html.dark {
   /* Wordmark plate and pin: identity and the primary call to action. */
   --brand: 214 54 44;
   --brand-deep: 160 34 26;
-
-  /* Globe ocean: selection and secondary emphasis. */
-  --info: 74 143 227;
-  --info-deep: 42 95 165;
 
   --good: 95 198 74;
   --bad: 232 78 68;
@@ -74,9 +70,6 @@ html.light {
 
   --brand: 196 46 36;
   --brand-deep: 150 30 22;
-
-  --info: 47 107 196;
-  --info-deep: 32 76 145;
 
   --good: 62 143 46;
   --bad: 214 62 62;

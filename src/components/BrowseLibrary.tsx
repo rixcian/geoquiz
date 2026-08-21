@@ -66,7 +66,7 @@ export function BrowseLibrary({ cards }: { cards: Card[] }) {
             onChange={(e) => setQuery(e.target.value)}
             placeholder="Search countries, tells, categories…"
             aria-label="Search cards"
-            className="w-full rounded-xl border border-line bg-surface py-2.5 pl-10 pr-3.5 text-sm font-medium placeholder:font-normal placeholder:text-faint focus:border-info focus:outline-none focus:ring-2 focus:ring-info/30"
+            className="w-full rounded-xl border border-line bg-surface py-2.5 pl-10 pr-3.5 text-sm font-medium placeholder:font-normal placeholder:text-faint focus:border-brand focus:outline-none focus:ring-2 focus:ring-brand/30"
           />
         </div>
         <div className="flex rounded-xl border border-line bg-surface p-1">
