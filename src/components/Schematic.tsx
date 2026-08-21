@@ -16,6 +16,49 @@ export function Schematic({ art, className }: { art: Art; className?: string }) 
   );
 }
 
+/**
+ * Every schematic is wrapped in this rather than sizing its own <svg>.
+ *
+ * The `width`/`height` attributes matter more than they look: an inline SVG
+ * carrying only a viewBox has no intrinsic size, and `height: 100%` against a
+ * parent sized by `min-height` resolves to `auto`. Chromium falls back to the
+ * default replaced-element size and still paints something; WebKit collapses
+ * the element to zero and the card renders blank. Giving the SVG real
+ * intrinsic dimensions means the worst case is "drawn at its natural size"
+ * instead of "invisible".
+ */
+function Frame({
+  vw,
+  vh,
+  width,
+  orientation,
+  children,
+}: {
+  vw: number;
+  vh: number;
+  /** Intrinsic width in px; height follows from the viewBox ratio. */
+  width: number;
+  orientation: "tall" | "wide";
+  children: React.ReactNode;
+}) {
+  return (
+    <svg
+      viewBox={`0 0 ${vw} ${vh}`}
+      width={width}
+      height={Math.round((width * vh) / vw)}
+      preserveAspectRatio="xMidYMid meet"
+      role="presentation"
+      className={
+        orientation === "tall"
+          ? "block h-full max-h-full w-auto max-w-full"
+          : "block h-auto max-h-full w-full max-w-full"
+      }
+    >
+      {children}
+    </svg>
+  );
+}
+
 function render(art: Art) {
   switch (art.kind) {
     case "bollard":
@@ -45,7 +88,7 @@ function Bollard({ art }: { art: BollardArt }) {
   const clipId = `bollard-clip-${hash(JSON.stringify(art))}`;
 
   return (
-    <svg viewBox={`0 0 ${W} ${H}`} className="h-full max-h-[340px] w-auto" role="presentation">
+    <Frame vw={W} vh={H} width={148} orientation="tall">
       <defs>
         <clipPath id={clipId}>
           <BollardBody art={art} x={x} y={top} w={postW} h={postH} />
@@ -71,7 +114,7 @@ function Bollard({ art }: { art: BollardArt }) {
       </g>
 
       {art.reflector ? <Reflector art={art} x={x} y={top} w={postW} h={postH} /> : null}
-    </svg>
+    </Frame>
   );
 }
 
@@ -92,7 +135,7 @@ function BollardBody({
 }) {
   const common = {
     fill: art.body,
-    ...(stroke ? { stroke: "rgb(0 0 0 / 0.28)", strokeWidth: 1 } : {}),
+    ...(stroke ? { stroke: "rgba(0, 0, 0, 0.28)", strokeWidth: 1 } : {}),
   };
 
   if (art.shape === "domed") {
@@ -114,12 +157,12 @@ function Reflector({ art, x, y, w, h }: { art: BollardArt; x: number; y: number;
   if (!r) return null;
   const cy = y + (h * r.top) / 100;
   if (r.shape === "circle") {
-    return <circle cx={x + w / 2} cy={cy + 8} r={7} fill={r.color} stroke="rgb(0 0 0 / 0.25)" strokeWidth={1} />;
+    return <circle cx={x + w / 2} cy={cy + 8} r={7} fill={r.color} stroke="rgba(0, 0, 0, 0.25)" strokeWidth={1} />;
   }
   if (r.shape === "strip") {
-    return <rect x={x + 5} y={cy} width={w - 10} height={26} rx={2} fill={r.color} stroke="rgb(0 0 0 / 0.25)" strokeWidth={1} />;
+    return <rect x={x + 5} y={cy} width={w - 10} height={26} rx={2} fill={r.color} stroke="rgba(0, 0, 0, 0.25)" strokeWidth={1} />;
   }
-  return <rect x={x + 7} y={cy} width={w - 14} height={15} rx={1.5} fill={r.color} stroke="rgb(0 0 0 / 0.25)" strokeWidth={1} />;
+  return <rect x={x + 7} y={cy} width={w - 14} height={15} rx={1.5} fill={r.color} stroke="rgba(0, 0, 0, 0.25)" strokeWidth={1} />;
 }
 
 /* ------------------------------------------------------------------ plate */
@@ -132,7 +175,7 @@ function Plate({ art }: { art: PlateArt }) {
   const bandH = art.topBand ? (ratio === "eu" ? 22 : 46) : 0;
 
   return (
-    <svg viewBox={`0 0 ${W} ${H}`} className="w-full max-w-[480px]" role="presentation">
+    <Frame vw={W} vh={H} width={480} orientation="wide">
       <rect
         x={3}
         y={3}
@@ -140,7 +183,7 @@ function Plate({ art }: { art: PlateArt }) {
         height={H - 6}
         rx={8}
         fill={art.bg}
-        stroke={art.border ?? "rgb(0 0 0 / 0.25)"}
+        stroke={art.border ?? "rgba(0, 0, 0, 0.25)"}
         strokeWidth={art.border ? 7 : 1.5}
       />
 
@@ -177,7 +220,7 @@ function Plate({ art }: { art: PlateArt }) {
       >
         {art.text}
       </text>
-    </svg>
+    </Frame>
   );
 }
 
@@ -221,12 +264,12 @@ function RoadLine({ art }: { art: RoadLineArt }) {
   const H = 220;
 
   return (
-    <svg viewBox={`0 0 ${W} ${H}`} className="w-full max-w-[480px]" role="presentation">
+    <Frame vw={W} vh={H} width={480} orientation="wide">
       <rect x={0} y={0} width={W} height={H} rx={6} fill={art.surface} />
       <Line style={art.edge.style} color={art.edge.color} x={34} h={H} />
       <Line style={art.edge.style} color={art.edge.color} x={W - 34} h={H} />
       <Line style={art.center.style} color={art.center.color} x={W / 2} h={H} center />
-    </svg>
+    </Frame>
   );
 }
 
@@ -270,7 +313,7 @@ function Pole({ art }: { art: PoleArt }) {
   const arms = Array.from({ length: Math.max(art.crossarms, 0) }, (_, i) => top + 18 + i * 26);
 
   return (
-    <svg viewBox={`0 0 ${W} ${H}`} className="h-full max-h-[340px] w-auto" role="presentation">
+    <Frame vw={W} vh={H} width={246} orientation="tall">
       <rect x={0} y={bottom} width={W} height={3} rx={1.5} className="fill-line" />
 
       {art.profile === "a-frame" ? (
@@ -316,7 +359,7 @@ function Pole({ art }: { art: PoleArt }) {
           <path d={`M 0 ${arms[0] - 8} Q ${cx} ${arms[0] + 12} ${W} ${arms[0] - 8}`} fill="none" />
         </g>
       ) : null}
-    </svg>
+    </Frame>
   );
 }
 
@@ -329,15 +372,15 @@ function Glyph({ art }: { art: GlyphArt }) {
 
   const outline =
     shape === "circle" ? (
-      <circle cx={c} cy={c} r={c - 10} fill={art.bg} stroke="rgb(0 0 0 / 0.2)" strokeWidth={2} />
+      <circle cx={c} cy={c} r={c - 10} fill={art.bg} stroke="rgba(0, 0, 0, 0.2)" strokeWidth={2} />
     ) : shape === "diamond" ? (
-      <path d={`M ${c} 10 L ${S - 10} ${c} L ${c} ${S - 10} L 10 ${c} Z`} fill={art.bg} stroke="rgb(0 0 0 / 0.2)" strokeWidth={2} />
+      <path d={`M ${c} 10 L ${S - 10} ${c} L ${c} ${S - 10} L 10 ${c} Z`} fill={art.bg} stroke="rgba(0, 0, 0, 0.2)" strokeWidth={2} />
     ) : shape === "triangle" ? (
       <path d={`M ${c} 18 L ${S - 14} ${S - 30} L 14 ${S - 30} Z`} fill={art.bg} stroke={art.fg} strokeWidth={14} strokeLinejoin="round" />
     ) : shape === "octagon" ? (
-      <path d={octagon(c, c, c - 10)} fill={art.bg} stroke="rgb(0 0 0 / 0.2)" strokeWidth={2} />
+      <path d={octagon(c, c, c - 10)} fill={art.bg} stroke="rgba(0, 0, 0, 0.2)" strokeWidth={2} />
     ) : (
-      <rect x={10} y={10} width={S - 20} height={S - 20} rx={16} fill={art.bg} stroke="rgb(0 0 0 / 0.2)" strokeWidth={2} />
+      <rect x={10} y={10} width={S - 20} height={S - 20} rx={16} fill={art.bg} stroke="rgba(0, 0, 0, 0.2)" strokeWidth={2} />
     );
 
   // A red ring on a white circle is the European speed-limit sign; draw the
@@ -349,7 +392,7 @@ function Glyph({ art }: { art: GlyphArt }) {
   const size = art.glyph.length > 5 ? 34 : art.glyph.length > 2 ? 46 : 68;
 
   return (
-    <svg viewBox={`0 0 ${S} ${S}`} className="h-full max-h-[300px] w-auto" role="presentation">
+    <Frame vw={S} vh={S} width={280} orientation="tall">
       {outline}
       {isRinged ? <circle cx={c} cy={c} r={c - 20} fill="none" stroke={art.fg} strokeWidth={20} /> : null}
       <text
@@ -364,7 +407,7 @@ function Glyph({ art }: { art: GlyphArt }) {
       >
         {art.glyph}
       </text>
-    </svg>
+    </Frame>
   );
 }
 

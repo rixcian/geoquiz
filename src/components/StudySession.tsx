@@ -203,7 +203,7 @@ export function StudySession({ cards }: { cards: Card[] }) {
           <BoxMeter box={box} />
         </div>
 
-        <div className="art-stage flex min-h-[300px] items-center justify-center sm:min-h-[380px]">
+        <div className="art-stage flex h-[300px] items-center justify-center sm:h-[380px]">
           <CardFace card={current} priority={index === 0} />
         </div>
 
