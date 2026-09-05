@@ -1,26 +1,23 @@
 /**
  * Plonk It scraper — run this on your own machine, not in CI.
  *
- *   npm run scrape -- --help
+ *   pnpm scrape --help
  *
- * Reads country guide pages, groups the images and prose under each heading
- * into meta cards, downloads the images, and writes:
+ * Each country page is a JavaScript app, but it ships the whole guide as JSON
+ * in a <script id="__PRELOADED_DATA__"> tag, so there is no DOM to scrape and
+ * no headless browser needed. One Plonk It "tip" becomes one card. Writes:
  *
  *   src/content/scraped/cards.json   the card data
  *   src/content/scraped/index.ts     re-export consumed by src/content/index.ts
  *   public/images/plonkit/<slug>/    downloaded images
  *
- * Cards whose id matches a seed card replace it, so scraping upgrades the
- * built-in content in place instead of duplicating it.
+ * Tips carry their own tags ("bollard", "chevron/sign", "coverage"), which map
+ * onto our categories directly, and their own stable ids, which become part of
+ * the card id so a re-scrape updates a card rather than duplicating it.
  *
  * Politeness: obeys robots.txt (including Crawl-delay), sends a descriptive
  * User-Agent, sleeps between requests, and caches every response under
  * .scrape-cache/ so re-runs and parser tweaks cost zero extra requests.
- *
- * A caveat worth reading: the selectors below are a best-effort guess at the
- * page structure. Run with --dry-run --limit 1 first, look at what comes out,
- * and adjust SELECTORS / HEADING_MAP until the extraction is right. The
- * caching means iterating on the parser is fast.
  *
  * Licensing is your call and your responsibility. Images on guide sites are
  * frequently Street View captures owned by Google rather than by the site, so
@@ -32,7 +29,6 @@ import { existsSync } from "node:fs";
 import { mkdir, readFile, writeFile } from "node:fs/promises";
 import { dirname, join, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
-import * as cheerio from "cheerio";
 
 const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), "..");
 const CACHE_DIR = join(ROOT, ".scrape-cache");
@@ -44,29 +40,47 @@ const BASE = "https://www.plonkit.net";
 const USER_AGENT =
   "GeoQuizScraper/0.1 (personal study tool; contact via repository owner)";
 
-/** Tweak these if the extraction comes out wrong. */
-const SELECTORS = {
-  /** Links on the index page that lead to a country guide. */
-  countryLink: "a[href^='/']",
-  /** Container holding the guide body. Falls back to <body> if absent. */
-  content: "main, #content, [role='main']",
-  /** Elements treated as section headings. */
-  heading: "h1, h2, h3, h4",
-  /** Elements treated as prose. */
-  paragraph: "p, li",
-  image: "img",
+/**
+ * Plonk It's own tip tags -> our category ids. Tags are a fixed vocabulary the
+ * site applies by hand, so this is a lookup rather than a guess. An unknown
+ * tag falls through to TEXT_FALLBACK below; add it here when one shows up.
+ */
+const TAG_MAP: Record<string, string> = {
+  bollard: "bollards",
+  bollards: "bollards",
+  pole: "utility-poles",
+  poles: "utility-poles",
+  roadline: "road-lines",
+  roadlines: "road-lines",
+  "road lines": "road-lines",
+  "license plates": "license-plates",
+  "licence plates": "license-plates",
+  "chevron/sign": "road-signs",
+  sign: "road-signs",
+  signs: "road-signs",
+  guardrail: "road-signs",
+  guardrails: "road-signs",
+  bollardsign: "road-signs",
+  language: "scripts",
+  script: "scripts",
+  coverage: "google-car",
+  car: "google-car",
+  camera: "google-car",
+  landscape: "landscape",
+  architecture: "landscape",
+  vegetation: "landscape",
+  other: "landscape",
 };
 
-/** Heading keyword -> our category id. First match wins, so order matters. */
-const HEADING_MAP: [RegExp, string][] = [
-  [/bollard/i, "bollards"],
-  [/\b(pole|utility|electric|power line)/i, "utility-poles"],
-  [/\b(road line|line marking|road marking|centre line|center line|marking)/i, "road-lines"],
-  [/\b(plate|licence|license)/i, "license-plates"],
-  [/\b(sign|chevron|guardrail|guard rail|bus stop)/i, "road-signs"],
-  [/\b(language|script|alphabet|letter)/i, "scripts"],
-  [/\b(car|camera|vehicle|snorkel|antenna|blur)/i, "google-car"],
-  [/\b(architect|landscape|vegetation|terrain|domain|soil|climate)/i, "landscape"],
+/** Used only for tips the site left untagged. First match wins. */
+const TEXT_FALLBACK: [RegExp, string][] = [
+  [/\bbollard/i, "bollards"],
+  [/\b(utility pole|power line|telephone pole)/i, "utility-poles"],
+  [/\b(road line|centre line|center line|road marking)/i, "road-lines"],
+  [/\b(licence plate|license plate)/i, "license-plates"],
+  [/\b(sign|chevron|guardrail|bus stop)/i, "road-signs"],
+  [/\b(language|alphabet|script|letter)/i, "scripts"],
+  [/\b(camera|coverage|snorkel|antenna|blur|generation \d)/i, "google-car"],
 ];
 
 /** Country slug -> [display name, ISO alpha-2, region id]. */
@@ -143,14 +157,29 @@ interface Options {
   only: string[];
   images: boolean;
   delayMs: number;
+  /** Images are small and there are thousands, so they get their own pace. */
+  imageDelayMs: number;
   refresh: boolean;
+  ignoreRobots: boolean;
 }
 
 function parseArgs(argv: string[]): Options | null {
-  const opts: Options = { dryRun: false, limit: null, only: [], images: true, delayMs: 1500, refresh: false };
+  const opts: Options = {
+    dryRun: false,
+    limit: null,
+    only: [],
+    images: true,
+    delayMs: 1500,
+    imageDelayMs: 400,
+    refresh: false,
+    ignoreRobots: false,
+  };
   for (let i = 0; i < argv.length; i++) {
     const arg = argv[i];
     switch (arg) {
+      case "--":
+        // pnpm forwards a literal `--` through to the script; ignore it.
+        break;
       case "--help":
       case "-h":
         return null;
@@ -163,11 +192,17 @@ function parseArgs(argv: string[]): Options | null {
       case "--refresh":
         opts.refresh = true;
         break;
+      case "--ignore-robots":
+        opts.ignoreRobots = true;
+        break;
       case "--limit":
         opts.limit = Number(argv[++i]);
         break;
       case "--delay":
         opts.delayMs = Number(argv[++i]);
+        break;
+      case "--image-delay":
+        opts.imageDelayMs = Number(argv[++i]);
         break;
       case "--country":
         opts.only.push(String(argv[++i]));
@@ -183,18 +218,25 @@ function usage(): void {
   console.log(`
 Plonk It scraper
 
-  npm run scrape -- [flags]
+  pnpm scrape [flags]
 
   --dry-run          parse and report, write nothing
   --country <slug>   scrape only this country (repeatable)
   --limit <n>        stop after n countries
   --no-images        skip image downloads, keep the text
-  --delay <ms>       pause between requests (default 1500, raised if
+  --delay <ms>       pause between page requests (default 1500, raised if
                      robots.txt asks for more)
+  --image-delay <ms> pause between image requests (default 400). There are
+                     thousands of images and each is a few hundred KB.
   --refresh          ignore the cache and refetch
+  --ignore-robots    fetch pages robots.txt asks crawlers not to fetch.
+                     Plonk It's robots.txt admits only Googlebot, Bingbot and
+                     DuckDuckBot, so without this the run returns nothing. The
+                     Crawl-delay is still honoured and the User-Agent is still
+                     honest; this skips the path check, nothing else.
   --help
 
-First run:  npm run scrape -- --dry-run --limit 1
+First run:  pnpm scrape --dry-run --limit 1
 `);
 }
 
@@ -270,83 +312,120 @@ function allowed(robots: Robots, path: string): boolean {
 
 /* ------------------------------------------------------------ discovery */
 
-async function discoverCountries(opts: Options): Promise<string[]> {
-  if (opts.only.length) return opts.only;
-
-  const found = new Set<string>();
-  try {
-    const html = await fetchText(`${BASE}/`, opts);
-    const $ = cheerio.load(html);
-    $(SELECTORS.countryLink).each((_, el) => {
-      const href = $(el).attr("href") ?? "";
-      const slug = href.replace(/^\//, "").replace(/\/$/, "").toLowerCase();
-      if (slug in COUNTRIES) found.add(slug);
-    });
-  } catch (err) {
-    console.warn(`! could not read the index page (${(err as Error).message}); falling back to the built-in country list`);
-  }
-
-  // The index is JavaScript-rendered on some builds of the site, so fall back
-  // to the known slugs rather than silently scraping nothing.
-  const slugs = found.size > 0 ? [...found] : Object.keys(COUNTRIES);
-  return slugs.sort();
+/**
+ * The index page is an empty app shell with no preloaded data, so there is
+ * nothing to discover from it and fetching it would just be a wasted request.
+ * COUNTRIES below is the list. Add a slug there when Plonk It adds a country.
+ */
+function discoverCountries(opts: Options): string[] {
+  return (opts.only.length ? opts.only : Object.keys(COUNTRIES)).sort();
 }
 
 /* ------------------------------------------------------------ extraction */
 
-interface Extracted {
-  category: string;
-  headingText: string;
-  paragraphs: string[];
-  images: string[];
+/**
+ * The bits of __PRELOADED_DATA__ we read. Every field is optional: it is
+ * someone else's payload and can change shape without warning, so the parser
+ * checks rather than assumes, and a page that no longer matches is reported as
+ * yielding no tips instead of throwing.
+ */
+interface PreloadedItem {
+  kind?: string;
+  id?: string;
+  tags?: string[];
+  data?: {
+    text?: string[];
+    image?: { imageUrl?: string; imageLink?: string; alt?: string };
+  };
 }
 
-function categoryFor(heading: string): string | null {
-  for (const [pattern, category] of HEADING_MAP) {
-    if (pattern.test(heading)) return category;
+interface PreloadedGuide {
+  title?: string;
+  code?: string;
+  steps?: { title?: string; items?: PreloadedItem[] }[];
+}
+
+/** One Plonk It tip, flattened into what a card needs. */
+interface Tip {
+  /** Plonk It's own stable id, e.g. "nK4e". Becomes part of the card id. */
+  id: string;
+  category: string;
+  paragraphs: string[];
+  imageUrl?: string;
+  /** Street View link behind the tip's image, when there is one. */
+  streetView?: string;
+}
+
+const PRELOADED_RE =
+  /<script id="__PRELOADED_DATA__"[^>]*>([\s\S]*?)<\/script>/;
+
+function parsePreloaded(html: string): PreloadedGuide | null {
+  const raw = html.match(PRELOADED_RE)?.[1];
+  if (!raw) return null;
+  try {
+    const parsed = JSON.parse(raw) as { data?: { public?: PreloadedGuide } };
+    return parsed.data?.public ?? null;
+  } catch {
+    return null;
+  }
+}
+
+/** Plonk It writes markdown in its tip text; cards render plain strings. */
+function plain(markdown: string): string {
+  return markdown
+    .replace(/\[([^\]]+)\]\([^)]*\)/g, "$1")
+    .replace(/\*{1,3}([^*]+)\*{1,3}/g, "$1")
+    .replace(/\s+/g, " ")
+    .trim();
+}
+
+function categoryFor(tags: string[], text: string): string | null {
+  for (const tag of tags) {
+    const mapped = TAG_MAP[tag.trim().toLowerCase()];
+    if (mapped) return mapped;
+  }
+  for (const [pattern, category] of TEXT_FALLBACK) {
+    if (pattern.test(text)) return category;
   }
   return null;
 }
 
-function extractSections(html: string, pageUrl: string): Extracted[] {
-  const $ = cheerio.load(html);
-  const root = $(SELECTORS.content).first().length ? $(SELECTORS.content).first() : $("body");
+function extractTips(guide: PreloadedGuide, pageUrl: string): Tip[] {
+  const tips: Tip[] = [];
 
-  const sections: Extracted[] = [];
-  let current: Extracted | null = null;
+  for (const step of guide.steps ?? []) {
+    for (const item of step.items ?? []) {
+      if (item.kind !== "tip" || !item.id) continue;
 
-  root.find(`${SELECTORS.heading}, ${SELECTORS.paragraph}, ${SELECTORS.image}`).each((_, el) => {
-    const node = $(el);
-    const tag = (el as { tagName?: string }).tagName?.toLowerCase() ?? "";
+      const paragraphs = (item.data?.text ?? [])
+        .map(plain)
+        .filter((p) => p.length > 0);
+      if (paragraphs.length === 0) continue;
 
-    if (/^h[1-4]$/.test(tag)) {
-      const text = node.text().trim();
-      if (!text) return;
-      const category = categoryFor(text);
-      current = category ? { category, headingText: text, paragraphs: [], images: [] } : null;
-      if (current) sections.push(current);
-      return;
-    }
+      const category = categoryFor(item.tags ?? [], paragraphs.join(" "));
+      if (!category) continue;
 
-    if (!current) return;
+      const tip: Tip = { id: item.id, category, paragraphs };
 
-    if (tag === "img") {
-      const src = node.attr("src") ?? node.attr("data-src") ?? "";
-      if (!src || src.startsWith("data:")) return;
-      try {
-        current.images.push(new URL(src, pageUrl).toString());
-      } catch {
-        /* unparseable src; skip */
+      const image = item.data?.image;
+      if (image?.imageUrl) {
+        try {
+          tip.imageUrl = new URL(image.imageUrl, pageUrl).toString();
+        } catch {
+          /* unparseable path; the card keeps its schematic */
+        }
       }
-      return;
+      // imageLink is sometimes a Street View permalink and sometimes just the
+      // image again. Only the former is worth recording as a source.
+      if (image?.imageLink && /^https?:\/\/(maps\.app\.goo\.gl|goo\.gl\/maps|www\.google\.[a-z.]+\/maps)/.test(image.imageLink)) {
+        tip.streetView = image.imageLink;
+      }
+
+      tips.push(tip);
     }
+  }
 
-    const text = node.text().replace(/\s+/g, " ").trim();
-    // Drop nav crumbs and one-word fragments that are not really prose.
-    if (text.length > 25) current.paragraphs.push(text);
-  });
-
-  return sections.filter((s) => s.paragraphs.length > 0 || s.images.length > 0);
+  return tips;
 }
 
 /* --------------------------------------------------------------- images */
@@ -361,11 +440,53 @@ const EXT_BY_TYPE: Record<string, string> = {
 
 const MAX_IMAGE_BYTES = 8 * 1024 * 1024;
 
-async function downloadImage(url: string, slug: string, index: number, opts: Options): Promise<string | null> {
+/**
+ * The payload gives raw paths like /images/albania/Bollards.png, and those are
+ * not public: they answer 403. The site serves every image through a resizing
+ * endpoint instead, /images/resize/<width>/<quality>/<path>, which is what its
+ * own pages request and what returns 200. 1200/80 is the width and quality the
+ * site itself uses for tip images; it converts to webp on the way out.
+ */
+const IMAGE_WIDTH = 1200;
+const IMAGE_QUALITY = 80;
+
+function resizedUrl(rawUrl: string): string {
+  return rawUrl.replace(
+    /\/images\/(?!resize\/)/,
+    `/images/resize/${IMAGE_WIDTH}/${IMAGE_QUALITY}/`,
+  );
+}
+
+/** First refusal from the image host, so main can explain it once instead of
+ *  silently producing cards with no photos. */
+let imageRefusal: string | null = null;
+
+/**
+ * Images are named after the tip they belong to, not after their position in
+ * the run, which makes the name stable across re-scrapes and means a file you
+ * put there yourself is picked up as that card's photo. Anything already on
+ * disk wins and costs no request.
+ */
+function existingImage(slug: string, tipId: string): string | null {
+  for (const ext of new Set(Object.values(EXT_BY_TYPE))) {
+    if (existsSync(join(IMAGE_DIR, slug, `${tipId}.${ext}`))) {
+      return `/images/plonkit/${slug}/${tipId}.${ext}`;
+    }
+  }
+  return null;
+}
+
+async function downloadImage(url: string, slug: string, tipId: string, opts: Options): Promise<string | null> {
+  const already = existingImage(slug, tipId);
+  if (already) return already;
+
   try {
-    await throttle(opts.delayMs);
-    const res = await fetch(url, { headers: { "user-agent": USER_AGENT } });
-    if (!res.ok) return null;
+    await throttle(opts.imageDelayMs);
+    const res = await fetch(resizedUrl(url), { headers: { "user-agent": USER_AGENT } });
+    if (!res.ok) {
+      imageRefusal ??= `${res.status} ${res.statusText}`;
+      return null;
+    }
     const type = (res.headers.get("content-type") ?? "").split(";")[0]?.trim() ?? "";
     const ext = EXT_BY_TYPE[type];
     if (!ext) return null;
@@ -375,7 +496,7 @@ async function downloadImage(url: string, slug: string, index: number, opts: Opt
 
     const dir = join(IMAGE_DIR, slug);
     await mkdir(dir, { recursive: true });
-    const name = `${index}.${ext}`;
+    const name = `${tipId}.${ext}`;
     await writeFile(join(dir, name), buf);
     return `/images/plonkit/${slug}/${name}`;
   } catch {
@@ -405,17 +526,26 @@ async function main(): Promise<void> {
   }
 
   const robots = await loadRobots(opts);
+  if (opts.ignoreRobots) {
+    console.log(
+      "--ignore-robots: fetching pages robots.txt asks crawlers to leave alone.\n" +
+        "Crawl-delay is still honoured and the User-Agent still identifies this\n" +
+        "script. Republishing what comes back is a separate question from\n" +
+        "downloading it; see the licensing note in the README.\n",
+    );
+  }
   if (robots.crawlDelayMs > opts.delayMs) {
     console.log(`robots.txt asks for ${robots.crawlDelayMs}ms between requests; using that`);
     opts.delayMs = robots.crawlDelayMs;
   }
 
-  let slugs = await discoverCountries(opts);
+  let slugs = discoverCountries(opts);
   if (opts.limit !== null) slugs = slugs.slice(0, opts.limit);
   console.log(`${slugs.length} countr${slugs.length === 1 ? "y" : "ies"} to scrape, ${opts.delayMs}ms apart\n`);
 
   const cards: unknown[] = [];
   let skipped = 0;
+  let blockedByRobots = 0;
 
   for (const slug of slugs) {
     const meta = COUNTRIES[slug];
@@ -426,9 +556,10 @@ async function main(): Promise<void> {
     }
     const [name, code, region] = meta;
     const path = `/${slug}`;
-    if (!allowed(robots, path)) {
+    if (!opts.ignoreRobots && !allowed(robots, path)) {
       console.warn(`- ${slug}: disallowed by robots.txt`);
       skipped++;
+      blockedByRobots++;
       continue;
     }
 
@@ -442,52 +573,89 @@ async function main(): Promise<void> {
       continue;
     }
 
-    const sections = extractSections(html, url);
-    if (sections.length === 0) {
-      console.warn(`! ${slug}: no recognised sections. Check SELECTORS and HEADING_MAP against the saved HTML in .scrape-cache/`);
+    const guide = parsePreloaded(html);
+    if (!guide) {
+      console.warn(
+        `! ${slug}: no __PRELOADED_DATA__ in the page. The site's shape may have` +
+          ` changed; the response is saved in .scrape-cache/ for you to look at.`,
+      );
       skipped++;
       continue;
     }
 
-    for (const section of sections) {
-      const detail = section.paragraphs.join(" ").slice(0, 900);
-      if (!detail) continue;
+    const tips = extractTips(guide, url);
+    if (tips.length === 0) {
+      console.warn(`! ${slug}: payload parsed but held no usable tips`);
+      skipped++;
+      continue;
+    }
 
-      let image: { src: string; alt: string; credit: string; creditUrl: string } | undefined;
-      const firstImage = section.images[0];
-      if (opts.images && !opts.dryRun && firstImage) {
-        const local = await downloadImage(firstImage, slug, cards.length, opts);
-        if (local) {
-          image = {
-            src: local,
-            alt: `${name} — ${section.headingText}`,
-            credit: "via Plonk It",
-            creditUrl: url,
-          };
-        }
+    // Prefer the page's own title and country code over the local table.
+    const country = guide.title?.trim() || name;
+    const countryCode = guide.code?.trim().toLowerCase() || code;
+
+    for (const tip of tips) {
+      const detail = tip.paragraphs.join(" ").slice(0, 900);
+
+      // A file already on disk is linked whatever the flags say: --no-images
+      // means "do not download", not "ignore the images I already have".
+      let local = existingImage(slug, tip.id);
+      if (!local && opts.images && !opts.dryRun && tip.imageUrl) {
+        local = await downloadImage(tip.imageUrl, slug, tip.id, opts);
       }
 
+      const image = local
+        ? {
+            src: local,
+            alt: `${country}: ${tip.category.replace(/-/g, " ")}`,
+            credit: "via Plonk It",
+            creditUrl: tip.streetView ?? url,
+          }
+        : undefined;
+
       cards.push({
-        // Matching the seed id scheme means this replaces the built-in card
-        // for the same country and category rather than duplicating it.
-        id: `${section.category}-${code}`,
-        category: section.category,
+        // Plonk It's tip id keeps this stable across re-scrapes, so a card is
+        // updated rather than duplicated when the guide is edited.
+        id: `${tip.category}-${countryCode}-${tip.id}`,
+        category: tip.category,
         region,
-        country: name,
-        countryCode: code,
+        country,
+        countryCode,
         tell: firstSentence(detail),
         detail,
-        art: fallbackArt(section.category),
+        art: fallbackArt(tip.category),
         ...(image ? { image } : {}),
         provenance: "plonkit",
         source: { label: "Plonk It", url },
       });
     }
 
-    console.log(`✓ ${slug}: ${sections.length} section${sections.length === 1 ? "" : "s"}`);
+    console.log(`✓ ${slug}: ${tips.length} tip${tips.length === 1 ? "" : "s"}`);
   }
 
   console.log(`\n${cards.length} cards from ${slugs.length - skipped} countries (${skipped} skipped)`);
+
+  if (imageRefusal) {
+    console.log(
+      `\nThe image host refused every download (${imageRefusal}). Guide pages come\n` +
+        `back fine, but /images/ sits behind bot protection that this script does\n` +
+        `not try to defeat. The cards are complete otherwise and render with their\n` +
+        `schematic art, so add --no-images to skip the attempts and the wait.`,
+    );
+  }
+
+  if (blockedByRobots === slugs.length) {
+    console.log(
+      `\nEverything was blocked by ${BASE}/robots.txt, which ends with a\n` +
+        `\`User-agent: *\` / \`Disallow: /\` group. The site allows Googlebot,\n` +
+        `Bingbot and DuckDuckBot and no one else. That is the site asking not to\n` +
+        `be crawled, so this script stops rather than working around it.\n\n` +
+        `Ask the Plonk It maintainers for permission or a data export, write\n` +
+        `cards by hand in src/content/seed/, or pass --ignore-robots if you have\n` +
+        `decided to fetch anyway.`,
+    );
+    return;
+  }
 
   if (opts.dryRun) {
     console.log("\n--dry-run: nothing written. Sample card:\n");
@@ -499,11 +667,11 @@ async function main(): Promise<void> {
   await writeFile(OUT_JSON, `${JSON.stringify(cards, null, 2)}\n`);
   await writeFile(
     OUT_INDEX,
-    `/**\n * Regenerated by \`npm run scrape\`. Do not edit by hand.\n */\nimport cards from "./cards.json";\n\nexport const SCRAPED_CARDS: unknown[] = cards;\n`,
+    `/**\n * Regenerated by \`pnpm scrape\`. Do not edit by hand.\n */\nimport cards from "./cards.json";\n\nexport const SCRAPED_CARDS: unknown[] = cards;\n`,
   );
   console.log(`\nwrote ${OUT_JSON}`);
   console.log(`wrote ${OUT_INDEX}`);
-  console.log("\nrun `npm run build` to pick the new content up");
+  console.log("\nrun `pnpm build` to pick the new content up");
 }
 
 /** Scraped cards carry a photo, but keep a schematic so nothing renders blank

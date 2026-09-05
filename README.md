@@ -9,9 +9,12 @@ gave it away, reveal, then mark yourself right or wrong. Missed cards come back
 tomorrow, cards you know keep stretching further out.
 
 ```bash
-npm install
-npm run dev        # http://localhost:3000
+pnpm install
+pnpm dev           # http://localhost:3000
 ```
+
+pnpm is the package manager here (pinned via `packageManager` in
+`package.json`). If you do not have it, `corepack enable` will provide it.
 
 ## How it works
 
@@ -85,60 +88,85 @@ To add a card by hand, append an object to the relevant file:
 
 ## Scraping Plonk It
 
-`scripts/scrape-plonkit.ts` pulls country guide pages, groups the images and
-prose under each heading into cards, and writes `src/content/scraped/cards.json`
-plus images into `public/images/plonkit/`. Scraped cards override seed cards
-with the same id.
+`scripts/scrape-plonkit.ts` pulls country guide pages and writes
+`src/content/scraped/cards.json`, plus images into `public/images/plonkit/`.
+
+The pages are a JavaScript app, but each one ships its whole guide as JSON in a
+`<script id="__PRELOADED_DATA__">` tag, so the scraper reads that instead of
+walking a DOM. No headless browser, and nothing to re-tune when the markup
+changes. One Plonk It tip becomes one card: Albania yields 35, Japan 53.
+
+Tips carry their own tags (`bollard`, `chevron/sign`, `coverage`, `language`),
+which map onto our eight categories in `TAG_MAP`, and their own stable ids,
+which go into the card id as `<category>-<code>-<tipId>`. A re-scrape therefore
+updates cards rather than duplicating them. Where a scrape covers a country and
+category that a seed card was standing in for, the seed card is retired in
+`src/content/index.ts` so the same meta does not appear twice.
 
 **Run it on your own machine.** It is deliberately not wired into CI or the
 build.
 
 ```bash
-npm run scrape -- --dry-run --limit 1    # always start here
-npm run scrape -- --country poland       # one country
-npm run scrape                           # everything
-npm run build                            # pick up the new content
+pnpm scrape --dry-run --limit 1    # always start here
+pnpm scrape --country poland       # one country
+pnpm scrape                        # everything
+pnpm build                         # pick up the new content
 ```
 
 Flags: `--dry-run`, `--country <slug>` (repeatable), `--limit <n>`,
-`--no-images`, `--delay <ms>`, `--refresh`, `--help`.
+`--no-images`, `--delay <ms>`, `--refresh`, `--ignore-robots`, `--help`.
 
 It obeys `robots.txt` including `Crawl-delay`, sends a descriptive User-Agent,
 sleeps between requests, and caches every response under `.scrape-cache/` so
 iterating on the parser costs no extra requests.
 
-**The selectors are a guess.** `SELECTORS` and `HEADING_MAP` at the top of the
-script are a best-effort read of the page structure, written without access to
-the live site. Run `--dry-run --limit 1` first, look at the sample card it
-prints, and adjust until the extraction is right. If a page yields no sections,
-the cached HTML is sitting in `.scrape-cache/` for you to inspect.
+**By default the scraper returns nothing, and that is correct.**
+`https://www.plonkit.net/robots.txt` ends with a `User-agent: *` /
+`Disallow: /` group; the only crawlers it admits are Googlebot, Bingbot and
+DuckDuckBot. Every country is skipped with `disallowed by robots.txt`, and the
+script says so rather than looking broken.
 
-**Licensing is on you.** Images on GeoGuessr guide sites are largely Google
-Street View captures, which belong to Google rather than to the site hosting
-them. Downloading them for private study is a different question from
-republishing them. Check the terms before you deploy anything you scraped, and
-note that `public/images/plonkit/` and `src/content/scraped/cards.json` are
-gitignored by default — remove those lines from `.gitignore` if you decide to
-commit scraped content.
+`--ignore-robots` overrides that path check. It changes only that: the
+`Crawl-delay` is still honoured, and the User-Agent still identifies the script
+rather than impersonating an allowed crawler. Know what you are overriding. The
+file carries a `Content-Signal: ai-train=no` and describes itself as an express
+reservation of rights under Article 4 of the EU copyright directive. The
+alternatives are asking the Plonk It maintainers for permission or a data
+export, or expanding the seed cards in `src/content/seed/` by hand.
+
+**Images do not come down; text does.** Guide pages return 200, but
+`/images/` answers 403 to anything that is not a browser. That is bot
+protection, an actual server-side control rather than a posted request, and
+the scraper does not try to defeat it: it reports the refusal once and carries
+on. Cards are complete otherwise and render with their schematic art, which is
+what that art is for. Use `--no-images` to skip the attempts and the wait.
+
+**Licensing is on you.** The prose is Plonk It's, and the images, if you ever
+obtain them another way, are largely Google's Street View captures rather than
+Plonk It's. Private study is a different question from republishing. Note that
+`public/images/plonkit/` and `src/content/scraped/cards.json` are gitignored by
+default; remove those lines from `.gitignore` only if you have decided to
+publish what you scraped.
 
 ## Commands
 
 ```bash
-npm run dev        # dev server
-npm run build      # production build
-npm start          # serve the production build
-npm test           # SRS unit tests (node:test)
-npm run lint       # eslint
-npm run typecheck  # tsc --noEmit
-npm run scrape     # see above
+pnpm dev           # dev server
+pnpm build         # production build
+pnpm start         # serve the production build
+pnpm test          # SRS unit tests (node:test)
+pnpm lint          # eslint
+pnpm typecheck     # tsc --noEmit
+pnpm scrape        # see above
 ```
 
 ## Deploying
 
 Every route is statically prerendered and there is nothing to provision — no
 database, no environment variables, no runtime services. Import the repo on
-Vercel and the defaults are correct: `npm run build`, output handled by the
-Next.js preset.
+Vercel and the defaults are correct: the `pnpm-lock.yaml` in the repo makes
+Vercel install with pnpm and run `pnpm build`, output handled by the Next.js
+preset.
 
 Two things worth knowing:
 
@@ -148,7 +176,7 @@ Two things worth knowing:
   Settings → General → Default branch, or pick it directly as the Production
   Branch in Vercel's project settings.
 - **Scraped content is not deployed.** `public/images/plonkit/` and
-  `src/content/scraped/cards.json` are gitignored, so anything `npm run scrape`
+  `src/content/scraped/cards.json` are gitignored, so anything `pnpm scrape`
   produces stays on your machine and Vercel will build from the seed content
   alone. That is deliberate — it keeps a licensing decision from being made by
   accident. Both are ignored together, so there is no half-state where cards
