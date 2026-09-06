@@ -10,7 +10,7 @@ import scripts from "./seed/scripts.json";
 import utilityPoles from "./seed/utility-poles.json";
 
 /**
- * Scraped content is produced by `npm run scrape`. It takes precedence over a
+ * Scraped content is produced by `pnpm scrape`. It takes precedence over a
  * seed card sharing the same id, so running the scraper upgrades cards in
  * place rather than duplicating them.
  */
@@ -47,10 +47,9 @@ function validate(raw: unknown, index: number): Card {
   const region = str(raw.region, `card "${id}"`, "region");
   if (!REGION_SET.has(region)) fail(`card "${id}"`, `unknown region "${region}"`);
 
-  // Ids are `<category>-<suffix>`. The scraper builds ids the same way, so a
-  // scraped card lands on top of the seed card for the same country and
-  // category instead of appearing alongside it. Enforced here because a
-  // silent mismatch shows up as a duplicate card, not as an error.
+  // Ids are `<category>-<suffix>`, which the filters and the scraper both
+  // rely on. Enforced here because a silent mismatch shows up as a card
+  // filed under the wrong heading, not as an error.
   if (!id.startsWith(`${category}-`)) {
     fail(`card "${id}"`, `id must start with its category, "${category}-"`);
   }
@@ -103,10 +102,22 @@ function build(): Card[] {
   });
 
   // Scraped cards override seeds sharing an id.
-  SCRAPED_CARDS.forEach((raw, i) => {
-    const card = validate(raw, i);
-    byId.set(card.id, card);
-  });
+  const scraped = SCRAPED_CARDS.map((raw, i) => validate(raw, i));
+  scraped.forEach((card) => byId.set(card.id, card));
+
+  // A scrape produces one card per Plonk It tip, so a country and category
+  // that seeded a single hand-written card can come back as several with
+  // different ids. Retire the seed card in that case: it was a placeholder
+  // for exactly this content, and keeping it would show the same meta twice.
+  const covered = new Set(
+    scraped.map((c) => `${c.category}/${c.countryCode ?? c.country}`),
+  );
+  for (const [id, card] of byId) {
+    if (card.provenance !== "seed") continue;
+    if (covered.has(`${card.category}/${card.countryCode ?? card.country}`)) {
+      byId.delete(id);
+    }
+  }
 
   return [...byId.values()].sort((a, b) =>
     a.category === b.category ? a.country.localeCompare(b.country) : a.category.localeCompare(b.category),

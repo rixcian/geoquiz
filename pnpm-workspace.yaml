@@ -1,0 +1,8 @@
+# pnpm 11 reads settings from here rather than from package.json.
+#
+# Dependency build scripts are blocked by default. These two need theirs:
+# esbuild links its platform binary (tsx depends on it) and unrs-resolver
+# does the same for eslint's import resolver.
+allowBuilds:
+  esbuild: true
+  unrs-resolver: true

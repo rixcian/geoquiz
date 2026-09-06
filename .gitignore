@@ -12,3 +12,6 @@ next-env.d.ts
 .scrape-cache/
 public/images/plonkit/
 src/content/scraped/cards.json
+
+# Stray npm lockfile; this project uses pnpm
+package-lock.json
