@@ -72,6 +72,23 @@ const TAG_MAP: Record<string, string> = {
   other: "landscape",
 };
 
+/**
+ * Alt text for a card photo. The photo IS the question, and the country is the
+ * answer, so this says what kind of thing is in frame and nothing more. Naming
+ * the country here would read the answer aloud to a screen reader while the
+ * card is still face down.
+ */
+const ALT_BY_CATEGORY: Record<string, string> = {
+  bollards: "A roadside bollard, seen from the road",
+  "utility-poles": "A utility pole, seen from the road",
+  "road-lines": "Road markings, seen from the road",
+  "license-plates": "A vehicle licence plate",
+  "road-signs": "A road sign, seen from the road",
+  scripts: "Writing on a sign, seen from the road",
+  "google-car": "The Street View camera vehicle, or its blur",
+  landscape: "A roadside view of the surrounding landscape",
+};
+
 /** Used only for tips the site left untagged. First match wins. */
 const TEXT_FALLBACK: [RegExp, string][] = [
   [/\bbollard/i, "bollards"],
@@ -607,7 +624,7 @@ async function main(): Promise<void> {
       const image = local
         ? {
             src: local,
-            alt: `${country}: ${tip.category.replace(/-/g, " ")}`,
+            alt: ALT_BY_CATEGORY[tip.category] ?? "A roadside view",
             credit: "via Plonk It",
             creditUrl: tip.streetView ?? url,
           }

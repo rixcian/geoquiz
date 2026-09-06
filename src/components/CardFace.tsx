@@ -12,7 +12,9 @@ export function CardFace({ card, priority }: { card: Card; priority?: boolean })
       <figure className="relative h-full w-full">
         <Image
           src={card.image.src}
-          alt={card.image.alt || `${card.country} ${card.category}`}
+          // Never name the country here: the photo is the question and the
+          // country is the answer, so this would read it out before the flip.
+          alt={card.image.alt || `A roadside ${card.category.replace(/-/g, " ")} photo`}
           fill
           priority={priority}
           sizes="(max-width: 768px) 100vw, 720px"
